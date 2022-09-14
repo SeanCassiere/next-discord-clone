@@ -8,10 +8,31 @@ import superjson from "superjson";
 import type { AppRouter } from "../server/router";
 import "../styles/globals.css";
 
+import PersistentAppWrapper from "../components/app/persistent-app-wrapper";
+import { useMemo } from "react";
+import { useRouter } from "next/router";
+
+const appRoutes = ["/channels"];
+
 const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }) => {
+  const router = useRouter();
+  const isAppRoute = useMemo(() => {
+    for (const route of appRoutes) {
+      if (router.route.includes(route)) {
+        return true;
+      }
+    }
+    return false;
+  }, [router.route]);
+
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      {isAppRoute && (
+        <PersistentAppWrapper>
+          <Component {...pageProps} />
+        </PersistentAppWrapper>
+      )}
+      {!isAppRoute && <Component {...pageProps} />}
     </SessionProvider>
   );
 };
