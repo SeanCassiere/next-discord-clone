@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
+import MeLayout from "../../../layouts/app/me-layout";
 import ServerLayout from "../../../layouts/app/server-layout";
 
 const ConversationWithChannelId = () => {
@@ -14,7 +15,7 @@ const ConversationWithChannelId = () => {
           {conversationId} # {channelId}
         </title>
       </Head>
-      {conversationId && conversationId === "@me" && channelId && <div>@me</div>}
+      {conversationId && conversationId === "@me" && channelId && <MeLayout channelId={channelId} />}
       {conversationId && conversationId !== "@me" && channelId && (
         <ServerLayout serverId={conversationId} channelId={channelId} />
       )}

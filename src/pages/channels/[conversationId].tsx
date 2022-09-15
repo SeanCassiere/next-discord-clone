@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
+import MeLayout from "../../layouts/app/me-layout";
 import ServerLayout from "../../layouts/app/server-layout";
 
 const ChannelOnlyConversationIdPage = () => {
@@ -11,7 +12,7 @@ const ChannelOnlyConversationIdPage = () => {
       <Head>
         <title>Channels</title>
       </Head>
-      {conversationId && conversationId?.toLowerCase() === "@me" && <div>@me layout</div>}
+      {conversationId && conversationId?.toLowerCase() === "@me" && <MeLayout />}
       {conversationId && conversationId?.toLowerCase() !== "@me" && <ServerLayout serverId={conversationId} />}
     </>
   );
