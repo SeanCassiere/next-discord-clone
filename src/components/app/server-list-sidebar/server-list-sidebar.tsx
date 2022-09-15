@@ -2,32 +2,12 @@ import React, { useMemo } from "react";
 import cn from "classnames";
 import { useRouter } from "next/router";
 import { FaIceCream, FaCompass, FaPlus } from "react-icons/fa";
-
-const SERVER_LIST = [
-  {
-    id: "a9f9401f9a5c999e3fa716129f8b9398",
-    image: null,
-    name: "test",
-  },
-  {
-    id: "d26b37fba19944f6a18c8b5fbc833a87",
-    image: "https://cdn.discordapp.com/embed/avatars/0.png",
-    name: "My Server 2",
-  },
-  {
-    id: "ed0416b3ff30643dd593cb6a1d204349",
-    image: null,
-    name: "My Server 3",
-  },
-  {
-    id: "1f45ca7976b1af9481cd516c17e3dfff",
-    image: "https://cdn.discordapp.com/icons/531166470579814420/a_04e82454e8b3db04b42ad09d6a161ca3.webp?size=96",
-    name: "Formula 1",
-  },
-];
+import { trpc } from "../../../utils/trpc";
 
 const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeConversationId }) => {
   const router = useRouter();
+
+  const { data: serversForUser } = trpc.useQuery(["user.get-server-list-for-user"]);
 
   const serverList = useMemo(() => {
     let list: {
@@ -55,7 +35,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
         onClick: async () => false,
       },
     ];
-    const mappedServers = SERVER_LIST.map((server) => ({
+    const mappedServers = (serversForUser ? serversForUser : []).map((server) => ({
       id: server.id,
       name: server.name,
       image: server.image,
@@ -91,7 +71,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
       iconComponent: <FaCompass size="22" />,
     });
     return list;
-  }, [activeConversationId, router]);
+  }, [activeConversationId, router, serversForUser]);
 
   return (
     <nav className="flex-0 overflow-y-scroll h-screen bg-discordgray-900 shadow-lg pt-1">
@@ -175,10 +155,6 @@ const SideBarIcon: React.FC<
   );
 };
 
-const SideBarDivider = () => {
-  return <hr className="bg-discordgray-800 border border-discordgray-800 rounded-full mx-6" />;
-};
-
 function getListServerName(name: string) {
   const splitName = name.split(" ");
 
@@ -225,6 +201,10 @@ const ServerIcon: React.FC<{ image: string | null; name: string; isActive?: bool
       )}
     </div>
   );
+};
+
+const SideBarDivider = () => {
+  return <hr className="bg-discordgray-800 border border-discordgray-800 rounded-full mx-6" />;
 };
 
 export default ServerListSideBar;
