@@ -1,10 +1,28 @@
-import { useRouter } from "next/router";
 import React from "react";
+import { useRouter } from "next/router";
 import { trpc } from "../../../utils/trpc";
 
-const ServerChannelSidebar: React.FC<{ serverId: string }> = ({ serverId }) => {
+const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: string }> = ({
+  serverId,
+  activeChannelId,
+}) => {
   const router = useRouter();
+  const trpcUtils = trpc.useContext();
   const { data } = trpc.useQuery(["server.get-user-channels-for-server", { serverId }]);
+  const { mutate: setLastViewedChannel } = trpc.useMutation(["server.set-last-viewed-server-channel-for-user"]);
+
+  const onClickChannel = (channelId: string) => {
+    router.push(`/channels/${serverId}/${channelId}`);
+    setLastViewedChannel(
+      { serverId, channelId },
+      {
+        onSettled: () => {
+          trpcUtils.invalidateQueries(["user.get-server-list-for-user"]);
+        },
+      }
+    );
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex-0 bg-red-200 h-12">sidebar header</div>
@@ -19,7 +37,8 @@ const ServerChannelSidebar: React.FC<{ serverId: string }> = ({ serverId }) => {
                   <li
                     key={channel.id}
                     className="cursor-pointer my-2"
-                    onClick={() => router.push(`/channels/${serverId}/${channel.id}`)}
+                    onClick={() => onClickChannel(channel.id)}
+                    style={{ color: channel.id === activeChannelId ? "aqua" : undefined }}
                   >
                     {channel.name}
                   </li>

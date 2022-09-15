@@ -40,7 +40,12 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
       name: server.name,
       image: server.image,
       type: "app-navigation",
-      onClick: () => router.push("/channels/" + server.id),
+      onClick: () =>
+        router.push(
+          server.lastVisitedChannel
+            ? `/channels/` + server.id + "/" + server.lastVisitedChannel
+            : "/channels/" + server.id
+        ),
       iconComponent: (
         <ServerIcon image={server.image} name={server.name} isActive={activeConversationId === server.id} />
       ),

@@ -4,7 +4,7 @@ import ChannelLayout from "../channel-layout";
 
 const ServerLayout: React.FC<{ serverId: string; channelId?: string }> = ({ serverId, channelId }) => {
   return (
-    <ChannelLayout Sidebar={<ServerChannelSidebar serverId={serverId} />}>
+    <ChannelLayout Sidebar={<ServerChannelSidebar serverId={serverId} activeChannelId={channelId} />}>
       <div className="h-full">
         <ul>
           <li>ServerId: {serverId}</li>
