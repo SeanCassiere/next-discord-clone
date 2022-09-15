@@ -9,11 +9,10 @@ const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: strin
   const router = useRouter();
   const trpcUtils = trpc.useContext();
   const { data } = trpc.useQuery(["server.get-user-channels-for-server", { serverId }]);
-  const { mutate: setLastViewedChannel } = trpc.useMutation(["server.set-last-viewed-server-channel-for-user"]);
+  const { mutate: storeViewedChannelForServer } = trpc.useMutation(["server.set-last-viewed-server-channel-for-user"]);
 
   const onClickChannel = (channelId: string) => {
-    router.push(`/channels/${serverId}/${channelId}`);
-    setLastViewedChannel(
+    storeViewedChannelForServer(
       { serverId, channelId },
       {
         onSettled: () => {
@@ -21,6 +20,7 @@ const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: strin
         },
       }
     );
+    router.push(`/channels/${serverId}/${channelId}`);
   };
 
   return (
