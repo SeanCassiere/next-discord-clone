@@ -14,7 +14,10 @@ const ConversationWithChannelId = () => {
           {conversationId} # {channelId}
         </title>
       </Head>
-      {conversationId && channelId && <ServerLayout serverId={conversationId} channelId={channelId} />}
+      {conversationId && conversationId === "@me" && channelId && <div>@me</div>}
+      {conversationId && conversationId !== "@me" && channelId && (
+        <ServerLayout serverId={conversationId} channelId={channelId} />
+      )}
     </>
   );
 };
