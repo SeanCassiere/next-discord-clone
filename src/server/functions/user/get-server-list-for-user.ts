@@ -31,6 +31,6 @@ const SERVER_LIST = [
   },
 ];
 
-export function serverGetServerListForUser(userId: string) {
+export async function serverGetServerListForUser(userId: string) {
   return SERVER_LIST;
 }

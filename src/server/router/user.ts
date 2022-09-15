@@ -1,4 +1,4 @@
-import { serverGetServerListForUser } from "../functions/server/get-server-list-for-user";
+import { serverGetServerListForUser } from "../functions/user/get-server-list-for-user";
 import { createProtectedRouter } from "./context";
 
 export const userRouter = createProtectedRouter().query("get-server-list-for-user", {
