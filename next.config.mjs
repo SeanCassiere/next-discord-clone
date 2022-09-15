@@ -21,4 +21,7 @@ export default defineNextConfig({
     defaultLocale: "en-US",
   },
   productionBrowserSourceMaps: true,
+  images: {
+    domains: ["images.unsplash.com", "cdn.discordapp.com"],
+  },
 });
