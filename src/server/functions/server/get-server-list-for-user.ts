@@ -18,10 +18,16 @@ const SERVER_LIST = [
     position: 3,
   },
   {
+    id: "7a4b2e2dd77d9fa805caf8438ef0821d",
+    image: null,
+    name: "DarkCry",
+    position: 4,
+  },
+  {
     id: "1f45ca7976b1af9481cd516c17e3dfff",
     image: "https://cdn.discordapp.com/icons/531166470579814420/a_04e82454e8b3db04b42ad09d6a161ca3.webp?size=96",
     name: "Formula 1",
-    position: 4,
+    position: 5,
   },
 ];
 
