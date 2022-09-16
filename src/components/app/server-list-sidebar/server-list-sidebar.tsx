@@ -3,6 +3,7 @@ import cn from "classnames";
 import { useRouter } from "next/router";
 import { FaIceCream, FaCompass, FaPlus } from "react-icons/fa";
 import { trpc } from "../../../utils/trpc";
+import { getNameAbbreviation } from "../../../utils/get-name-abbreviation";
 
 const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeConversationId }) => {
   const router = useRouter();
@@ -17,6 +18,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
       type: string;
       onClick: any;
       iconComponent: React.ReactNode;
+      forceAriaSelect?: boolean;
     }[] = [
       {
         id: "@me",
@@ -25,6 +27,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
         type: "app-navigation",
         onClick: () => router.push("/channels/@me"),
         iconComponent: <FaIceCream size="28" />,
+        forceAriaSelect: true,
       },
       {
         id: "divider-1",
@@ -80,7 +83,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
 
   return (
     <nav className="flex-0 overflow-y-scroll h-screen bg-discordgray-900 shadow-lg pt-1">
-      <div className="w-20 flex flex-col">
+      <div aria-label="servers" className="w-20 flex flex-col">
         {serverList.map((option) => (
           <React.Fragment key={`server-list-${option.id}`}>
             {(option.type === "app-navigation" || option.type === "app-interaction") && (
@@ -88,6 +91,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
                 isActive={activeConversationId === option.id}
                 onClick={option.onClick}
                 icon={option.iconComponent}
+                forceAriaSelection={option.forceAriaSelect}
               />
             )}
             {option.type === "divider" && <>{option.iconComponent}</>}
@@ -99,11 +103,11 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
 };
 
 const SideBarIcon: React.FC<
-  { icon: React.ReactNode; isActive?: boolean } & React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
+  { icon: React.ReactNode; isActive?: boolean; forceAriaSelection?: boolean } & React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
   >
-> = ({ icon, isActive = false, ...rest }) => {
+> = ({ icon, isActive = false, forceAriaSelection, ...rest }) => {
   const className = cn(
     "relative",
     "flex",
@@ -132,7 +136,8 @@ const SideBarIcon: React.FC<
     "ease-linear",
     "cursor-pointer",
     "shadow-lg",
-    "group"
+    "group",
+    "select-none"
   );
 
   const indicatorClassName = cn(
@@ -152,31 +157,18 @@ const SideBarIcon: React.FC<
     },
     { "h-8": isActive, "top-2": isActive, "scale-100": isActive }
   );
+
+  const aria = {
+    ...(!forceAriaSelection && !isActive ? { "aria-hidden": true } : {}),
+    ...(isActive ? { "aria-selected": true } : {}),
+  };
   return (
-    <button {...rest} type="button" className={className}>
-      <span className={indicatorClassName}></span>
+    <div {...rest} className={className} {...aria}>
+      <span aria-hidden="true" className={indicatorClassName}></span>
       {icon}
-    </button>
+    </div>
   );
 };
-
-function getListServerName(name: string) {
-  const splitName = name.split(" ");
-
-  if (splitName[0] && splitName.length === 1 && splitName[0].length > 2) {
-    const firstLetter = splitName[0]?.charAt(0);
-    const secondLetter = splitName[0]?.charAt(1);
-    return `${firstLetter}${secondLetter}`.toUpperCase();
-  }
-
-  const firstWord = splitName[0];
-  const secondWord = splitName[1];
-  if (splitName.length >= 2 && firstWord && secondWord) {
-    return `${firstWord.charAt(0)}${secondWord.charAt(0)}`.toUpperCase();
-  }
-
-  return "NA";
-}
 
 const ServerIcon: React.FC<{ image: string | null; name: string; isActive?: boolean }> = ({
   image,
@@ -189,6 +181,9 @@ const ServerIcon: React.FC<{ image: string | null; name: string; isActive?: bool
     "ease-linear",
     "overflow-hidden",
     "w-12",
+    "flex",
+    "items-center",
+    "justify-center",
     {
       "rounded-3xl": isActive === false,
       "hover:rounded-xl": isActive === false,
@@ -198,18 +193,18 @@ const ServerIcon: React.FC<{ image: string | null; name: string; isActive?: bool
     }
   );
   return (
-    <div className={className}>
+    <div className={className} aria-hidden="true">
       {image ? (
         <img className="object-cover" width={50} height={50} src={image} alt={name} />
       ) : (
-        <span>{getListServerName(name)}</span>
+        <span>{getNameAbbreviation(name)}</span>
       )}
     </div>
   );
 };
 
 const SideBarDivider = () => {
-  return <hr className="bg-discordgray-800 border border-discordgray-800 rounded-full mx-6" />;
+  return <hr className="bg-discordgray-800 border border-discordgray-800 rounded-full mx-6" aria-hidden="true" />;
 };
 
 export default ServerListSideBar;

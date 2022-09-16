@@ -6,14 +6,22 @@ import MicrophoneUnmutedIcon from "../icons/microphone-unmuted";
 import HeadphoneUnmuted from "../icons/headphone-unmuted";
 import HeadphoneMuted from "../icons/headphone-muted";
 import SettingsCog from "../icons/settings-cog";
+import { getNameAbbreviation } from "../../../utils/get-name-abbreviation";
 
 const UserPresenceInteractor = () => {
   const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
   const [headphonesEnabled, setHeadphonesEnabled] = useState(false);
   return (
-    <div className="w-full h-full flex items-center group">
+    <div className="w-full h-full flex items-center group bg-discordgray-700">
       <div className="flex-1 pl-1">
-        <UserProfile customMessage={"🚀 LGTM"} onlineStatus="Online" />
+        <UserProfile
+          customMessage={"🚀 LGTM"}
+          onlineStatus="Online"
+          profilePicture={"https://cdn.discordapp.com/embed/avatars/0.png"}
+          // profilePicture={null}
+          profileName={"Source1"}
+          profileTag={"#0001"}
+        />
       </div>
       <div className="flex-0 w-28 flex items-center justify-end gap-3 pr-3">
         <button type="button" className="text-discordgray-400" onClick={() => setMicrophoneEnabled((prev) => !prev)}>
@@ -32,24 +40,31 @@ const UserPresenceInteractor = () => {
 
 export default UserPresenceInteractor;
 
-const UserProfile: React.FC<{ customMessage: string | null; onlineStatus: string }> = ({
-  customMessage,
-  onlineStatus,
-}) => {
+const UserProfile: React.FC<{
+  customMessage: string | null;
+  onlineStatus: string;
+  profilePicture: string | null;
+  profileName: string;
+  profileTag: string;
+}> = ({ customMessage, onlineStatus, profilePicture, profileName, profileTag }) => {
   const lcOnlStatus = onlineStatus.trim().toLowerCase();
 
   return (
-    <div className="h-10 flex items-center gap-1 cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 p-2">
+    <div className="h-10 flex items-center gap-1 cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 p-2 select-none">
       <div className="flex-0 w-10 p-1 relative">
-        <img
-          src="https://cdn.discordapp.com/embed/avatars/0.png"
-          className="object-cover rounded-full"
-          alt="profile picture"
-        />
+        {profilePicture ? (
+          <>
+            <img src={profilePicture} className="w-full object-cover rounded-full" alt="profile picture" />
+          </>
+        ) : (
+          <div className="w-full aspect-square flex items-center justify-center rounded-full text-sm bg-discordgray-400">
+            {getNameAbbreviation(profileName)}
+          </div>
+        )}
         <PictureIndicator color={lcOnlStatus === "online" ? "green" : lcOnlStatus === "away" ? "amber" : "red"} />
       </div>
       <div className="flex-1">
-        <div className="text-sm font-semibold text-white leading-tight">Source1</div>
+        <div className="text-sm font-semibold text-white leading-tight">{profileName}</div>
         <div className="text-xs font-light text-discordgray-400 relative overflow-hidden">
           {customMessage ? (
             <>
@@ -57,12 +72,12 @@ const UserProfile: React.FC<{ customMessage: string | null; onlineStatus: string
                 {customMessage}
               </span>
               <span className="block transition-all duration-150 ease-linear absolute -bottom-5 group-hover:bottom-0">
-                # 3546
+                {profileTag}
               </span>
             </>
           ) : (
             <>
-              <span className="block"># 3546</span>
+              <span className="block">{profileTag}</span>
             </>
           )}
         </div>
@@ -73,14 +88,12 @@ const UserProfile: React.FC<{ customMessage: string | null; onlineStatus: string
 
 const PictureIndicator: React.FC<{ color: "green" | "amber" | "red" }> = ({ color }) => {
   const classNames = cn(
-    "w-2.5",
-    "h-2.5",
+    "w-4",
+    "h-4",
     "rounded-full",
     "absolute",
-    "bottom-1",
-    "right-1",
-    "border",
-    "border-white",
+    "bottom-0",
+    "right-0.5",
     {
       "bg-green-500": color === "green",
     },
@@ -89,7 +102,9 @@ const PictureIndicator: React.FC<{ color: "green" | "amber" | "red" }> = ({ colo
     },
     {
       "bg-red-500": color === "red",
-    }
+    },
+    "border-4",
+    "border-discordgray-700"
   );
   return <span className={classNames} />;
 };

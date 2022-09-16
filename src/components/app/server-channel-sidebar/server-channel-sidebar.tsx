@@ -47,7 +47,7 @@ const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: strin
             </div>
           ))}
       </div>
-      <div className="flex-0 bg-discordgray-800 h-14">
+      <div className="flex-0 h-14">
         <UserPresenceInteractor />
       </div>
     </div>
