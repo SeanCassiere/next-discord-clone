@@ -12,7 +12,7 @@ const UserPresenceInteractor = () => {
   const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
   const [headphonesEnabled, setHeadphonesEnabled] = useState(false);
   return (
-    <div className="w-full h-full flex items-center group bg-discordgray-700">
+    <div className="w-full h-full flex items-center group bg-discordgray-750">
       <div className="flex-1 pl-1">
         <UserProfile
           customMessage={"🚀 LGTM"}
