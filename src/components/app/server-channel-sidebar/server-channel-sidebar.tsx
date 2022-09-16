@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { trpc } from "../../../utils/trpc";
+import UserPresenceInteractor from "../user-presence-interactor";
 
 const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: string }> = ({
   serverId,
@@ -46,7 +47,9 @@ const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: strin
             </div>
           ))}
       </div>
-      <div className="flex-0 bg-discordgray-800 h-16">bottom user stuff</div>
+      <div className="flex-0 bg-discordgray-800 h-14">
+        <UserPresenceInteractor />
+      </div>
     </div>
   );
 };
