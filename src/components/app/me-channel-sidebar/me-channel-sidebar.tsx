@@ -19,7 +19,7 @@ const MeChannelSidebar: React.FC<{ activeChannelId?: string }> = ({ activeChanne
           />
         </form>
       </div>
-      <div className="flex-1 overflow-y-scroll text-gray-200 p-2 flex flex-col gap-0.5">
+      <div className="flex-1 overflow-y-scroll text-gray-200 p-2 flex flex-col gap-0.5 small-scroller channel-bar">
         <SidebarOptionContainer selected={!activeChannelId || activeChannelId === "friends"} onClick={() => click("")}>
           Friends
         </SidebarOptionContainer>

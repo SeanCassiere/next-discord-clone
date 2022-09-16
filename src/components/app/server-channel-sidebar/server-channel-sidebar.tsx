@@ -27,7 +27,7 @@ const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: strin
   return (
     <div className="h-full flex flex-col">
       <div className="flex-0 bg-red-200 h-12">sidebar header</div>
-      <div className="flex-1 overflow-y-scroll text-gray-200">
+      <div className="flex-1 overflow-y-scroll text-gray-200 small-scroller channel-bar">
         {data &&
           data.parents.map((parent) => (
             <div key={parent.id} className="mx-4 my-5">

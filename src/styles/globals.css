@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  :root {
+    --clr-discordgray-900: #202225;
+    --clr-discordgray-800: #2f3136;
+    --clr-discordgray-700: #36393f;
+    --clr-discordgray-600: #474b52;
+    --clr-discordgray-400: #d4d7dc;
+    --clr-discordgray-300: #e3e5e8;
+    --clr-discordgray-200: #ebedef;
+    --clr-discordgray-100: #f2f3f5;
+    --clr-discordgray-50: #ebebeb;
+  }
+
+  .small-scroller::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .small-scroller::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  .small-scroller::-webkit-scrollbar-thumb {
+    --use-color: var(--clr-discordgray-800);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    background-color: var(--use-color);
+    min-height: 40px;
+  }
+
+  .channel-bar.small-scroller::-webkit-scrollbar-thumb {
+    --use-color: var(--clr-discordgray-600);
+  }
+
+  .small-scroller::-webkit-scrollbar-track {
+    --use-color: var(--clr-discordgray-900);
+    border-color: var(--use-color);
+    background-color: var(--use-color);
+    border: 2px solid var(--use-color);
+  }
+
+  .channel-bar.small-scroller::-webkit-scrollbar-track {
+    --use-color: var(--clr-discordgray-500);
+  }
+}

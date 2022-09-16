@@ -82,7 +82,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
   }, [activeConversationId, router, serversForUser]);
 
   return (
-    <nav className="flex-0 overflow-y-scroll h-screen bg-discordgray-900 shadow-lg pt-1">
+    <nav className="small-scroller flex-0 overflow-y-auto overflow-x-hidden h-screen bg-discordgray-900 shadow-lg pt-1">
       <div aria-label="servers" className="w-20 flex flex-col">
         {serverList.map((option) => (
           <React.Fragment key={`server-list-${option.id}`}>
