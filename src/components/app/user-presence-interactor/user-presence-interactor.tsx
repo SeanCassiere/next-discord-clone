@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import cn from "classnames";
 import { Popover, Transition } from "@headlessui/react";
+import Image from "next/future/image";
 
 import { getNameAbbreviation } from "../../../utils/get-name-abbreviation";
 import MicrophoneMutedIcon from "../icons/microphone-muted";
@@ -10,6 +11,7 @@ import HeadphoneMuted from "../icons/headphone-muted";
 import SettingsCog from "../icons/settings-cog";
 import PencilIcon from "../icons/pencil";
 import ChevronRightIcon from "../icons/chevron-right";
+import ClipboardIcon from "../icons/clipboard";
 
 const UserPresenceInteractor = () => {
   const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
@@ -19,6 +21,7 @@ const UserPresenceInteractor = () => {
       <div className="flex-1 pl-1">
         <UserProfile
           customMessage={"🚀 LGTM"}
+          // customMessage={null}
           onlineStatus="Online"
           profilePicture={"https://cdn.discordapp.com/embed/avatars/0.png"}
           // profilePicture={null}
@@ -50,7 +53,16 @@ const UserProfile: React.FC<{
   profileName: string;
   profileTag: string;
 }> = ({ customMessage, onlineStatus, profilePicture, profileName, profileTag }) => {
+  const statusChangeButtonRef = useRef<HTMLButtonElement | null>(null);
   const lcOnlStatus = onlineStatus.trim().toLowerCase();
+
+  const toggleStatusSelector = (open: boolean) => {
+    statusChangeButtonRef?.current?.click();
+  };
+
+  const clickUserTag = () => {
+    navigator?.clipboard?.writeText(profileName + profileTag);
+  };
 
   return (
     <Popover>
@@ -71,10 +83,16 @@ const UserProfile: React.FC<{
             </div>
             <div className="w-full px-2">
               <div className="w-32 h-14 px-2 relative">
-                <div className="text-xs w-24 h-24 absolute -top-3/4 left-2 rounded-full flex items-center justify-center overflow-hidden bg-red-500 border-4 border-discordgray-900">
+                <div className="text-xs w-24 h-24 absolute -top-3/4 left-2 rounded-full flex items-center justify-center bg-red-500 border-4 border-discordgray-900">
                   <div className="relative w-full">
                     {profilePicture ? (
-                      <img src={profilePicture} alt="image" className="object-cover" />
+                      <Image
+                        src={profilePicture}
+                        alt="image"
+                        width={100}
+                        height={100}
+                        className="w-full object-cover rounded-full"
+                      />
                     ) : (
                       <div className="w-full aspect-square flex items-center justify-center rounded-full font-medium text-3xl bg-discordgray-400">
                         {getNameAbbreviation(profileName)}
@@ -88,19 +106,58 @@ const UserProfile: React.FC<{
                   </div>
                 </div>
               </div>
-              <div className="text-xl text-white my-3 px-2 py-1 font-bold select-none cursor-pointer">
-                {profileName}
-                <span className="text-gray-300">{profileTag}</span>
+              <div className="my-3 px-2 py-1 select-none cursor-pointer flex items-center justify-between group transition-all duration-150">
+                <div className="text-xl text-white font-bold" onClick={() => clickUserTag()}>
+                  {profileName}
+                  <span className="text-gray-300">{profileTag}</span>
+                </div>
+                <span className="opacity-0 group-hover:opacity-100">
+                  <ClipboardIcon />
+                </span>
               </div>
               {customMessage && <div className="text-white text-sm px-2">{customMessage}</div>}
               <hr className="my-2 bg-discordgray-600 border border-discordgray-800 rounded-full" />
-              <div className="my-1 py-1 px-2 select-none rounded-sm text-sm text-gray-300 hover:bg-indigo-500 hover:text-white flex justify-between items-center">
-                <span>Online</span>
-                <ChevronRightIcon />
-              </div>
-              <div className="my-1 py-1 px-2 select-none text-sm">
-                <span className="text-gray-300">Edit custom status</span>
-              </div>
+              <Popover className="relative">
+                {({ open: isStatusSelectorOpen }) => (
+                  <div
+                    onMouseEnter={() => toggleStatusSelector(isStatusSelectorOpen)}
+                    onMouseLeave={() => toggleStatusSelector(isStatusSelectorOpen)}
+                  >
+                    <Popover.Button
+                      className="w-full my-1 py-1 px-2 select-none rounded-sm text-sm text-gray-300 hover:bg-indigo-500 hover:text-white flex justify-between items-center"
+                      ref={statusChangeButtonRef}
+                    >
+                      <span>Online</span>
+                      <ChevronRightIcon />
+                    </Popover.Button>
+                    <Transition
+                      enter="transition ease-out duration-75"
+                      enterFrom="transform scale-95 opacity-0"
+                      enterTo="transform scale-100 opacity-100"
+                      leave="transition duration-75 ease-out"
+                      leaveFrom="transform scale-100 opacity-100"
+                      leaveTo="transform scale-95 opacity-0"
+                    >
+                      <Popover.Panel className="absolute z-10 left-full -top-14">
+                        <div className="ml-3 bg-discordgray-900 w-72 shadow rounded p-2 text-white">
+                          <div>Online</div>
+                          <hr className="my-2 bg-discordgray-600 border border-discordgray-800 rounded-full" />
+                          <div>Options</div>
+                        </div>
+                      </Popover.Panel>
+                    </Transition>
+                  </div>
+                )}
+              </Popover>
+              {customMessage ? (
+                <div className="my-1 py-1 px-2 select-none text-sm">
+                  <span className="text-gray-300">Edit custom status</span>
+                </div>
+              ) : (
+                <div className="my-1 py-1 px-2 select-none text-sm">
+                  <span className="text-gray-300">Set a custom message</span>
+                </div>
+              )}
             </div>
           </div>
         </Popover.Panel>
@@ -109,7 +166,13 @@ const UserProfile: React.FC<{
         <div className="flex-0 w-10 p-1 relative">
           {profilePicture ? (
             <>
-              <img src={profilePicture} className="w-full object-cover rounded-full" alt="profile picture" />
+              <Image
+                src={profilePicture}
+                className="w-full object-cover rounded-full"
+                width={40}
+                height={40}
+                alt="profile picture"
+              />
             </>
           ) : (
             <div className="w-full aspect-square flex items-center justify-center rounded-full text-sm bg-discordgray-400">
@@ -121,7 +184,7 @@ const UserProfile: React.FC<{
             color={lcOnlStatus === "online" ? "green" : lcOnlStatus === "away" ? "amber" : "red"}
           />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 text-left">
           <div className="text-sm font-semibold text-white leading-tight">{profileName}</div>
           <div className="text-xs font-light text-discordgray-400 relative overflow-hidden">
             {customMessage ? (
@@ -152,6 +215,7 @@ const PictureIndicator: React.FC<{
   absoluteLarge?: boolean;
 }> = ({ color, larger, absoluteSmall, absoluteLarge }) => {
   const classNames = cn(
+    "z-10",
     {
       "w-4": !larger,
       "h-4": !larger,
@@ -168,8 +232,8 @@ const PictureIndicator: React.FC<{
     },
     {
       absolute: absoluteLarge,
-      "bottom-1": absoluteLarge,
-      "right-2.5": absoluteLarge,
+      "bottom-0": absoluteLarge,
+      "right-1": absoluteLarge,
     },
     {
       "bg-green-500": color === "green",
@@ -181,7 +245,7 @@ const PictureIndicator: React.FC<{
       "bg-red-500": color === "red",
     },
     "border-4",
-    "border-discordgray-700"
+    "border-discordgray-900"
   );
   return <span className={classNames} />;
 };

@@ -24,4 +24,5 @@ export default defineNextConfig({
   images: {
     domains: ["images.unsplash.com", "cdn.discordapp.com"],
   },
+  experimental: { images: { allowFutureImage: true } },
 });
