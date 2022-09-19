@@ -8,6 +8,7 @@ declare module "next-auth" {
   interface Session {
     user?: {
       id: string;
-    } & DefaultSession["user"] & { username: Prisma.UserMinAggregateOutputType["username"] };
+      username: Prisma.UserMinAggregateOutputType["username"];
+    } & DefaultSession["user"];
   }
 }

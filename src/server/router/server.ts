@@ -8,20 +8,18 @@ export const serverRouter = createProtectedRouter()
   .query("get-user-channels-for-server", {
     input: z.object({ serverId: z.string() }),
     resolve: async ({ input: { serverId }, ctx }) => {
-      const {
-        session: {
-          user: { id },
-        },
-      } = ctx;
-      return await getUserChannelsForServer({ serverId, userId: id });
+      const { session } = ctx;
+      const { user } = session;
+
+      return await getUserChannelsForServer({ serverId, userId: user.id });
     },
   })
   .mutation("set-last-viewed-server-channel-for-user", {
     input: z.object({ serverId: z.string(), channelId: z.string() }),
     resolve: async ({ ctx, input }) => {
-      const {
-        session: { user },
-      } = ctx;
+      const { session } = ctx;
+      const { user } = session;
+
       return await setLastViewedServerChannelForUser({
         userId: user.id,
         serverId: input.serverId,
