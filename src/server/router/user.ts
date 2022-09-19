@@ -6,6 +6,6 @@ export const userRouter = createProtectedRouter().query("get-server-list-for-use
     const {
       session: { user },
     } = ctx;
-    return await serverGetServerListForUser(user.id);
+    return await serverGetServerListForUser({ userId: user.id });
   },
 });

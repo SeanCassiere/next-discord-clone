@@ -1,3 +1,6 @@
+import { prisma } from "../../db/client";
+import { ServerService, ServerService_GetServerListForUserProps } from "../../services/Server";
+
 const SERVER_LIST: {
   id: string;
   image: string | null;
@@ -45,14 +48,25 @@ const SERVER_LIST: {
 export async function setLastVisitedForChannel({ serverId, channelId }: { serverId: string; channelId: string }) {
   const serverIndex = SERVER_LIST.findIndex((server) => server.id === serverId);
 
-  if (serverIndex === -1) return false;
-  const server = SERVER_LIST[serverIndex];
-  if (serverIndex >= 0 && server) {
-    (SERVER_LIST[serverIndex] as any).lastVisitedChannel = channelId;
+  try {
+    if (serverIndex === -1) return false;
+    const server = SERVER_LIST[serverIndex];
+    if (serverIndex >= 0 && server) {
+      (SERVER_LIST[serverIndex] as any).lastVisitedChannel = channelId;
+    }
+    return true;
+  } catch (error) {
+    return false;
   }
-  return true;
 }
 
-export async function serverGetServerListForUser(userId: string) {
-  return SERVER_LIST;
+export async function serverGetServerListForUser(props: ServerService_GetServerListForUserProps) {
+  return await ServerService.getServerListForUser(props);
+}
+
+export async function getServersForUser(userId: string) {
+  console.log("userId", userId, "\n\n");
+  const servers = await prisma.serverConnection.findMany({ where: { userId }, include: { server: true } });
+  console.log("servers", servers);
+  // return servers;
 }

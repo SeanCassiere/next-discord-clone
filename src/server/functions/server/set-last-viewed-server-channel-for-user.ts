@@ -1,12 +1,5 @@
-import { setLastVisitedForChannel } from "../user/get-server-list-for-user";
+import { ServerService, ServerService_SetLastVisitedChannelForServer } from "../../services/Server";
 
-export async function setLastViewedServerChannelForUser({
-  serverId,
-  channelId,
-}: {
-  userId: string;
-  serverId: string;
-  channelId: string;
-}) {
-  return await setLastVisitedForChannel({ serverId, channelId });
+export async function setLastViewedServerChannelForUser(props: ServerService_SetLastVisitedChannelForServer) {
+  return await ServerService.setLastVisitedChannelForServer(props);
 }
