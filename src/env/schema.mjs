@@ -10,7 +10,7 @@ export const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   NEXTAUTH_SECRET: z.string(),
   NEXTAUTH_URL: z.string().url(),
-  EMAIL_FROM: z.string().email(),
+  EMAIL_FROM: z.string().default("Discord Clone <no-reply@discord-clone.com>"),
   EMAIL_SERVER_USER: z.string(),
   EMAIL_SERVER_PASS: z.string(),
   EMAIL_SERVER_HOST: z.string(),
