@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useSession, signOut } from "next-auth/react";
-import MarketingNavbar from "../components/marketing/navbar";
+import MarketingNavbar from "../web/components/marketing/navbar";
 
 const Home: NextPage = () => {
   const { status, data: session } = useSession();

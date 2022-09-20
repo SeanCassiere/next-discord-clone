@@ -3,7 +3,8 @@ import cn from "classnames";
 import { Popover, Transition } from "@headlessui/react";
 import Image from "next/future/image";
 
-import { getNameAbbreviation } from "../../../utils/get-name-abbreviation";
+import { getNameAbbreviation } from "../../../../utils/get-name-abbreviation";
+import { trpc } from "../../../../utils/trpc";
 import MicrophoneMutedIcon from "../icons/microphone-muted";
 import MicrophoneUnmutedIcon from "../icons/microphone-unmuted";
 import HeadphoneUnmuted from "../icons/headphone-unmuted";
@@ -12,7 +13,7 @@ import SettingsCog from "../icons/settings-cog";
 import PencilIcon from "../icons/pencil";
 import ChevronRightIcon from "../icons/chevron-right";
 import ClipboardIcon from "../icons/clipboard";
-import { trpc } from "../../../utils/trpc";
+import XCircleFilledIcon from "../icons/x-circle-filled";
 
 const UserPresenceInteractor = () => {
   const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
@@ -23,8 +24,7 @@ const UserPresenceInteractor = () => {
       <div className="flex-1 pl-1">
         {user && (
           <UserProfile
-            customMessage={"🚀 LGTM"}
-            // customMessage={null}
+            customMessage={user.publicMessage}
             onlineStatus="Online"
             profilePicture={user.image}
             profileName={user.username ?? "untitled"}
@@ -163,15 +163,16 @@ const UserProfile: React.FC<{
                   </div>
                 )}
               </Popover>
-              {customMessage ? (
-                <div className="my-1 py-1 px-2 select-none text-sm">
-                  <span className="text-gray-300">Edit custom status</span>
-                </div>
-              ) : (
-                <div className="my-1 py-1 px-2 select-none text-sm">
-                  <span className="text-gray-300">Set a custom message</span>
-                </div>
-              )}
+              <div className="w-full my-1 py-1.5 px-2 select-none rounded-sm text-sm text-gray-300 hover:bg-indigo-500 hover:text-white flex justify-between items-center">
+                <button className="flex-1 text-left">
+                  {customMessage ? "Edit custom status" : "Set a custom message"}
+                </button>
+                {customMessage && (
+                  <button type="button">
+                    <XCircleFilledIcon />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </Popover.Panel>

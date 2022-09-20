@@ -57,6 +57,7 @@ model User {
     image             String?
     username          String?            @unique
     tag               String?
+    publicMessage     String?
     accounts          Account[]
     sessions          Session[]
     serverConnections ServerConnection[]

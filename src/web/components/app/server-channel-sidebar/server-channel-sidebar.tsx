@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "../../../../utils/trpc";
 import UserPresenceInteractor from "../user-presence-interactor";
 
 const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: string }> = ({

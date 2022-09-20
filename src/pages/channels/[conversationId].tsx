@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-import MeLayout from "../../layouts/app/me-layout";
-import ServerLayout from "../../layouts/app/server-layout";
+import MeLayout from "../../web/layouts/app/me-layout";
+import ServerLayout from "../../web/layouts/app/server-layout";
 
 const ChannelOnlyConversationIdPage = () => {
   const router = useRouter();

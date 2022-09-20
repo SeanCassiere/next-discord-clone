@@ -9,7 +9,8 @@
     "scroller",
     "superjson",
     "tailwindcss",
-    "trpc"
+    "trpc",
+    "zustand"
   ],
   "conventionalCommits.scopes": ["repo"]
 }

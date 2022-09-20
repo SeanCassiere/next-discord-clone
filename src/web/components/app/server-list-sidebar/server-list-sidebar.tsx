@@ -2,8 +2,8 @@ import React, { useMemo } from "react";
 import cn from "classnames";
 import { useRouter } from "next/router";
 import { FaIceCream, FaCompass, FaPlus } from "react-icons/fa";
-import { trpc } from "../../../utils/trpc";
-import { getNameAbbreviation } from "../../../utils/get-name-abbreviation";
+import { trpc } from "../../../../utils/trpc";
+import { getNameAbbreviation } from "../../../../utils/get-name-abbreviation";
 
 const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeConversationId }) => {
   const router = useRouter();

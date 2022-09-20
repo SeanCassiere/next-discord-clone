@@ -7,9 +7,9 @@ import superjson from "superjson";
 import type { AppType } from "next/app";
 import type { Session } from "next-auth";
 import type { AppRouter } from "../server/router";
-import "../styles/globals.css";
+import "../web/styles/globals.css";
 
-import PersistentAppWrapper from "../layouts/app/persistent-app-wrapper";
+import PersistentAppWrapper from "../web/layouts/app/persistent-app-wrapper";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 

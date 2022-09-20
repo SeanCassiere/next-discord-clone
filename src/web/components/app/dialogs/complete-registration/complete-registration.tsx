@@ -5,11 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import ShieldCheckIcon from "../../icons/shield-check";
 import Input from "../../form/Input";
-import { CompleteUserRegistrationSchema } from "../../../../server/validation/user";
-import { trpc } from "../../../../utils/trpc";
+import { CompleteUserRegistrationSchema } from "../../../../../server/validation/user";
+import { trpc } from "../../../../../utils/trpc";
+import { useDialogStore } from "../../../../hooks/stores/useDialogStore";
 
-const CompleteRegistration: React.FC<{ show: boolean; onComplete: () => void }> = ({ show, onComplete }) => {
+const CompleteRegistrationDialog: React.FC = () => {
   const trpcUtils = trpc.useContext();
+
+  const { isUserMessageDialogOpen, toggleUserMessageDialog } = useDialogStore();
 
   const {
     register,
@@ -19,14 +22,14 @@ const CompleteRegistration: React.FC<{ show: boolean; onComplete: () => void }> 
 
   const { mutate: completeRegistration } = trpc.useMutation(["user.complete-registration-for-user"], {
     onSuccess: () => {
-      onComplete();
+      toggleUserMessageDialog(false);
       trpcUtils.invalidateQueries(["user.check-user-registration-complete"]);
       trpcUtils.invalidateQueries(["user.get-user"]);
     },
   });
 
   return (
-    <Transition.Root show={show} as={Fragment}>
+    <Transition.Root show={isUserMessageDialogOpen} as={Fragment}>
       <Dialog as="div" onClose={() => {}} className="fixed z-50 inset-0 overflow-y-auto">
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -117,4 +120,4 @@ const CompleteRegistration: React.FC<{ show: boolean; onComplete: () => void }> 
   );
 };
 
-export default CompleteRegistration;
+export default CompleteRegistrationDialog;
