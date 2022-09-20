@@ -22,8 +22,8 @@ const UserPresenceInteractor = () => {
   const [headphonesEnabled, setHeadphonesEnabled] = useState(false);
   const { data: user } = trpc.useQuery(["user.get-user"]);
   return (
-    <div className="w-full h-full flex items-center group bg-discordgray-750">
-      <div className="flex-1 pl-1">
+    <div className="w-full h-full flex items-center justify-between group bg-discordgray-750 pr-2">
+      <div className="flex-0 pl-1">
         {user && (
           <UserProfile
             customMessage={user.publicMessage}
@@ -34,7 +34,7 @@ const UserPresenceInteractor = () => {
           />
         )}
       </div>
-      <div className="flex-0 w-28 flex items-center justify-end gap-3 pr-3">
+      <div className="flex-1 w-20 flex items-center justify-end gap-3">
         <button type="button" className="text-discordgray-400" onClick={() => setMicrophoneEnabled((prev) => !prev)}>
           {microphoneEnabled ? <MicrophoneUnmutedIcon /> : <MicrophoneMutedIcon />}
         </button>
@@ -202,7 +202,7 @@ const UserProfile: React.FC<{
       </Transition>
       <Popover.Button
         ref={interactorRef}
-        className="h-10 flex items-center gap-1 cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 p-2 select-none"
+        className="h-10 flex items-center gap-1 cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 p-2 pl-0 select-none"
       >
         <div className="flex-0 w-10 p-1 relative">
           {profilePicture ? (
