@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/auth/sign-in",
+    verifyRequest: "/auth/check-email", // (used for check email message)
   },
   theme: {
     colorScheme: "light",
