@@ -12,22 +12,25 @@ import SettingsCog from "../icons/settings-cog";
 import PencilIcon from "../icons/pencil";
 import ChevronRightIcon from "../icons/chevron-right";
 import ClipboardIcon from "../icons/clipboard";
+import { trpc } from "../../../utils/trpc";
 
 const UserPresenceInteractor = () => {
   const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
   const [headphonesEnabled, setHeadphonesEnabled] = useState(false);
+  const { data: user } = trpc.useQuery(["user.get-user"]);
   return (
     <div className="w-full h-full flex items-center group bg-discordgray-750">
       <div className="flex-1 pl-1">
-        <UserProfile
-          customMessage={"🚀 LGTM"}
-          // customMessage={null}
-          onlineStatus="Online"
-          profilePicture={"https://cdn.discordapp.com/embed/avatars/0.png"}
-          // profilePicture={null}
-          profileName={"Source1"}
-          profileTag={"#0001"}
-        />
+        {user && (
+          <UserProfile
+            customMessage={"🚀 LGTM"}
+            // customMessage={null}
+            onlineStatus="Online"
+            profilePicture={user.image}
+            profileName={user.username ?? "untitled"}
+            profileTag={`#${user.tag}`}
+          />
+        )}
       </div>
       <div className="flex-0 w-28 flex items-center justify-end gap-3 pr-3">
         <button type="button" className="text-discordgray-400" onClick={() => setMicrophoneEnabled((prev) => !prev)}>

@@ -3,6 +3,7 @@
     "discordapp",
     "discordgray",
     "headlessui",
+    "hookform",
     "Interactor",
     "NEXTAUTH",
     "scroller",
