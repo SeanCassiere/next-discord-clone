@@ -3,8 +3,9 @@ import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { loggerLink } from "@trpc/client/links/loggerLink";
 import { withTRPC } from "@trpc/next";
 import { SessionProvider } from "next-auth/react";
-import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
+import type { AppType } from "next/app";
+import type { Session } from "next-auth";
 import type { AppRouter } from "../server/router";
 import "../styles/globals.css";
 
@@ -14,7 +15,7 @@ import { useRouter } from "next/router";
 
 const appRoutes = ["/channels"];
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   const router = useRouter();
   const isAppRoute = useMemo(() => {
     for (const route of appRoutes) {
@@ -26,7 +27,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   }, [router.route]);
 
   return (
-    <SessionProvider session={(pageProps as any)?.session}>
+    <SessionProvider session={session}>
       {isAppRoute && (
         <PersistentAppWrapper>
           <Component {...pageProps} />
