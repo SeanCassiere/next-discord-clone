@@ -8,7 +8,7 @@ import superjson from "superjson";
 import type { AppRouter } from "../server/router";
 import "../styles/globals.css";
 
-import PersistentAppWrapper from "../components/app/persistent-app-wrapper";
+import PersistentAppWrapper from "../layouts/app/persistent-app-wrapper";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 

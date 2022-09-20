@@ -1,6 +1,6 @@
 import React from "react";
 import { useSession, signIn } from "next-auth/react";
-import ServerListSidebar from "../server-list-sidebar";
+import ServerListSidebar from "../../../components/app/server-list-sidebar";
 import { useRouter } from "next/router";
 
 const PersistentAppWrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {

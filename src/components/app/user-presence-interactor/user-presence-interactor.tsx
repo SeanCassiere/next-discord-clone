@@ -56,8 +56,14 @@ const UserProfile: React.FC<{
   const statusChangeButtonRef = useRef<HTMLButtonElement | null>(null);
   const lcOnlStatus = onlineStatus.trim().toLowerCase();
 
+  const [showClipboard, setShowClipboard] = useState(false);
+
   const toggleStatusSelector = (open: boolean) => {
     statusChangeButtonRef?.current?.click();
+  };
+
+  const toggleProfileNameClipboard = (open: boolean) => {
+    setShowClipboard(open);
   };
 
   const clickUserTag = () => {
@@ -106,12 +112,17 @@ const UserProfile: React.FC<{
                   </div>
                 </div>
               </div>
-              <div className="my-3 px-2 py-1 select-none cursor-pointer flex items-center justify-between group transition-all duration-150">
+              <div
+                className="my-3 px-2 py-1 select-none cursor-pointer flex items-center justify-between group transition-all duration-150"
+                onMouseEnter={() => toggleProfileNameClipboard(true)}
+                onMouseLeave={() => toggleProfileNameClipboard(false)}
+                onPointerLeave={() => toggleProfileNameClipboard(false)}
+              >
                 <div className="text-xl text-white font-bold" onClick={() => clickUserTag()}>
                   {profileName}
                   <span className="text-gray-300">{profileTag}</span>
                 </div>
-                <span className="opacity-0 group-hover:opacity-100">
+                <span className={cn({ "opacity-0": !showClipboard, "opacity-100": showClipboard })}>
                   <ClipboardIcon />
                 </span>
               </div>
