@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 
 const appRoutes = ["/channels"];
 
-const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }) => {
+const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter();
   const isAppRoute = useMemo(() => {
     for (const route of appRoutes) {
@@ -26,7 +26,7 @@ const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }) => 
   }, [router.route]);
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={(pageProps as any)?.session}>
       {isAppRoute && (
         <PersistentAppWrapper>
           <Component {...pageProps} />
