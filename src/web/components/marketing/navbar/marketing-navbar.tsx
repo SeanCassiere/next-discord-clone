@@ -17,10 +17,10 @@ const MarketingNavbar = () => {
             type="button"
             className="px-4 py-2 bg-white text-gray-700 rounded-full"
             onClick={() =>
-              status === "loading" || status === "authenticated" ? router.push("/channels/@me") : signIn()
+              status !== "loading" && status === "authenticated" ? router.push("/channels/@me") : signIn()
             }
           >
-            {status === "loading" || status === "authenticated" ? "Open App" : "Log In"}
+            {status !== "loading" && status === "authenticated" ? "Open App" : "Log In"}
           </button>
         </div>
       </nav>

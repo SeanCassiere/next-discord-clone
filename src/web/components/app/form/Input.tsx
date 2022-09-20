@@ -30,9 +30,11 @@ const Input = React.forwardRef<
             "pr-10",
             "border",
             {
-              "text-discordgray-50": !Boolean(errorText),
-              "placeholder-discordgray-50": !Boolean(errorText),
               "border-discordgray-600": !Boolean(errorText),
+              "text-discordgray-50": !Boolean(errorText),
+              "placeholder-discordgray-500": !Boolean(errorText),
+              "focus:ring-indigo-500": !Boolean(errorText),
+              "focus:border-indigo-500": !Boolean(errorText),
             },
             {
               "border-red-500": Boolean(errorText),
