@@ -5,14 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import ShieldCheckIcon from "../../icons/shield-check";
 import Input from "../../form/Input";
-import { CompleteUserRegistrationSchema } from "../../../../../server/validation/user";
+import { CompleteUserRegistrationSchema } from "../../../../../validation/user";
 import { trpc } from "../../../../../utils/trpc";
 import { useDialogStore } from "../../../../hooks/stores/useDialogStore";
 
 const CompleteRegistrationDialog: React.FC = () => {
   const trpcUtils = trpc.useContext();
 
-  const { isUserMessageDialogOpen, toggleUserMessageDialog } = useDialogStore();
+  const { isCompleteRegistrationDialogOpen, toggleCompleteRegistrationDialog } = useDialogStore();
 
   const {
     register,
@@ -22,14 +22,14 @@ const CompleteRegistrationDialog: React.FC = () => {
 
   const { mutate: completeRegistration } = trpc.useMutation(["user.complete-registration-for-user"], {
     onSuccess: () => {
-      toggleUserMessageDialog(false);
+      toggleCompleteRegistrationDialog(false);
       trpcUtils.invalidateQueries(["user.check-user-registration-complete"]);
       trpcUtils.invalidateQueries(["user.get-user"]);
     },
   });
 
   return (
-    <Transition.Root show={isUserMessageDialogOpen} as={Fragment}>
+    <Transition.Root show={isCompleteRegistrationDialogOpen} as={Fragment}>
       <Dialog as="div" onClose={() => {}} className="fixed z-50 inset-0 overflow-y-auto">
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -41,7 +41,7 @@ const CompleteRegistrationDialog: React.FC = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
+            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-75 transition-opacity" />
           </Transition.Child>
 
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">

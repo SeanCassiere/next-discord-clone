@@ -5,6 +5,8 @@ import Image from "next/future/image";
 
 import { getNameAbbreviation } from "../../../../utils/get-name-abbreviation";
 import { trpc } from "../../../../utils/trpc";
+import { useDialogStore } from "../../../hooks/stores/useDialogStore";
+
 import MicrophoneMutedIcon from "../icons/microphone-muted";
 import MicrophoneUnmutedIcon from "../icons/microphone-unmuted";
 import HeadphoneUnmuted from "../icons/headphone-unmuted";
@@ -56,10 +58,24 @@ const UserProfile: React.FC<{
   profileName: string;
   profileTag: string;
 }> = ({ customMessage, onlineStatus, profilePicture, profileName, profileTag }) => {
-  const statusChangeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const trpcUtils = trpc.useContext();
+
+  const interactorRef = useRef<HTMLButtonElement>(null);
+  const statusChangeButtonRef = useRef<HTMLButtonElement>(null);
   const lcOnlStatus = onlineStatus.trim().toLowerCase();
 
+  const { toggleUserMessageDialog } = useDialogStore();
+
   const [showClipboard, setShowClipboard] = useState(false);
+
+  const { mutate: setUserPublicMessage } = trpc.useMutation(["user.set-user-public-message"], {
+    onSuccess: () => {
+      trpcUtils.invalidateQueries(["user.get-user"]);
+    },
+  });
+  const handleClearUserMessage = () => {
+    setUserPublicMessage({ message: null });
+  };
 
   const toggleStatusSelector = (open: boolean) => {
     statusChangeButtonRef?.current?.click();
@@ -129,7 +145,7 @@ const UserProfile: React.FC<{
                   <ClipboardIcon />
                 </span>
               </div>
-              {customMessage && <div className="text-white text-sm px-2">{customMessage}</div>}
+              {customMessage && <div className="text-white text-sm px-2 select-text">{customMessage}</div>}
               <hr className="my-2 bg-discordgray-600 border border-discordgray-800 rounded-full" />
               <Popover className="relative">
                 {({ open: isStatusSelectorOpen }) => (
@@ -164,11 +180,18 @@ const UserProfile: React.FC<{
                 )}
               </Popover>
               <div className="w-full my-1 py-1.5 px-2 select-none rounded-sm text-sm text-gray-300 hover:bg-indigo-500 hover:text-white flex justify-between items-center">
-                <button className="flex-1 text-left">
+                <button
+                  type="button"
+                  className="flex-1 text-left"
+                  onClick={() => {
+                    toggleUserMessageDialog(true);
+                    interactorRef?.current?.click();
+                  }}
+                >
                   {customMessage ? "Edit custom status" : "Set a custom message"}
                 </button>
                 {customMessage && (
-                  <button type="button">
+                  <button type="button" onClick={handleClearUserMessage}>
                     <XCircleFilledIcon />
                   </button>
                 )}
@@ -177,7 +200,10 @@ const UserProfile: React.FC<{
           </div>
         </Popover.Panel>
       </Transition>
-      <Popover.Button className="h-10 flex items-center gap-1 cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 p-2 select-none">
+      <Popover.Button
+        ref={interactorRef}
+        className="h-10 flex items-center gap-1 cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 p-2 select-none"
+      >
         <div className="flex-0 w-10 p-1 relative">
           {profilePicture ? (
             <>
@@ -204,16 +230,16 @@ const UserProfile: React.FC<{
           <div className="text-xs font-light text-discordgray-400 relative overflow-hidden">
             {customMessage ? (
               <>
-                <span className="block transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0">
+                <span className="block transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0 truncate">
                   {customMessage}
                 </span>
-                <span className="block transition-all duration-150 ease-linear absolute -bottom-5 group-hover:bottom-0">
+                <span className="block transition-all duration-150 ease-linear absolute -bottom-5 group-hover:bottom-0 truncate">
                   {profileTag}
                 </span>
               </>
             ) : (
               <>
-                <span className="block">{profileTag}</span>
+                <span className="block truncate">{profileTag}</span>
               </>
             )}
           </div>

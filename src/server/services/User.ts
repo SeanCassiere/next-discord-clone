@@ -10,6 +10,7 @@ export type UserService_CompleteRegistration = {
   username: string;
 };
 export type UserService_GetUniqueTagForUser = { username: string };
+export type UserService_SetUserPublicMessage = { userId: string; publicMessage: string | null };
 
 class User {
   async checkRegistrationIsComplete(props: UserService_CheckRegistrationIsComplete) {
@@ -60,6 +61,13 @@ class User {
 
   async getUser(props: { userId: string }) {
     return await prisma.user.findUnique({ where: { id: props.userId } });
+  }
+
+  async setUserPublicMessage(props: UserService_SetUserPublicMessage) {
+    return await prisma.user.update({
+      where: { id: props.userId },
+      data: { publicMessage: props.publicMessage },
+    });
   }
 }
 

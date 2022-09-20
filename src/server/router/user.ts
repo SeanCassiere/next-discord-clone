@@ -1,8 +1,9 @@
 import { userCheckIfRegistrationIsCompleted } from "../functions/user/check-registration-is-completed";
 import { completeUserRegistration } from "../functions/user/complete-user-registration";
 import { serverGetServerListForUser } from "../functions/user/get-server-list-for-user";
+import { setUserPublicMessage } from "../functions/user/set-user-public-message";
 import { UserService } from "../services/User";
-import { CompleteUserRegistrationSchema } from "../validation/user";
+import { CompleteUserRegistrationSchema, SetUserPublicMessageSchema } from "../../validation/user";
 import { createProtectedRouter } from "./context";
 
 export const userRouter = createProtectedRouter()
@@ -29,5 +30,11 @@ export const userRouter = createProtectedRouter()
         name: input.name,
         userId: ctx.session.user.id,
       });
+    },
+  })
+  .mutation("set-user-public-message", {
+    input: SetUserPublicMessageSchema,
+    resolve: async ({ ctx, input }) => {
+      return await setUserPublicMessage({ userId: ctx.session.user.id, publicMessage: input.message });
     },
   });
