@@ -35,6 +35,12 @@ export const authOptions: NextAuthOptions = {
       from: env.EMAIL_FROM,
     }),
   ],
+  pages: {
+    signIn: "/auth/sign-in",
+  },
+  theme: {
+    colorScheme: "light",
+  },
 };
 
 export default NextAuth(authOptions);
