@@ -102,8 +102,11 @@ model ServerChannel {
     id   String @id @default(cuid())
     name String
 
-    server   Server              @relation(fields: [serverId], references: [id], onDelete: Cascade)
-    serverId String
+    type     String @default("server")
+    iconType String @default("server-channel-default")
+
+    server   Server?             @relation(fields: [serverId], references: [id], onDelete: Cascade)
+    serverId String?
     parent   ServerChannelGroup? @relation(fields: [parentId], references: [id], onDelete: Cascade)
     parentId String?
 

@@ -26,7 +26,25 @@ export type ServerService_GetUserChannelsForServerProps = {
   userId: string;
 };
 
+type ServerIconTypes = "server-channel-default" | "server-channel-protected" | "server-channel-announcements";
+
 class Server {
+  private _sortIconType(iconType: string | null): ServerIconTypes {
+    const defaultIconType = "server-channel-default";
+    if (!iconType) {
+      return "server-channel-default";
+    }
+
+    switch (iconType.toLowerCase()) {
+      case "server-channel-protected":
+        return "server-channel-protected";
+      case "server-channel-announcements":
+        return "server-channel-announcements";
+      case defaultIconType:
+      default:
+        return defaultIconType;
+    }
+  }
   async createNewServerByUser(props: ServerService_CreateNewServerByUserProps) {
     const { ownerId, name, description } = props;
 
@@ -112,9 +130,9 @@ class Server {
     return true;
   }
 
-  async gerUserChannelsForServer(props: ServerService_GetUserChannelsForServerProps) {
+  async getUserChannelsForServer(props: ServerService_GetUserChannelsForServerProps) {
     const parentsQuery = prisma.serverChannelGroup.findMany({ where: { serverId: props.serverId } });
-    const channelsQuery = prisma.serverChannel.findMany({ where: { serverId: props.serverId } });
+    const channelsQuery = prisma.serverChannel.findMany({ where: { serverId: props.serverId, type: "server" } });
 
     const [parents, channels] = await Promise.all([parentsQuery, channelsQuery]);
 
@@ -123,6 +141,7 @@ class Server {
       channels: channels.map((c) => ({
         id: c.id,
         name: c.name,
+        iconType: this._sortIconType(c.iconType),
         parent: c.parentId,
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
