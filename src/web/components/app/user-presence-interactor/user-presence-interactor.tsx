@@ -229,10 +229,10 @@ const UserProfile: React.FC<{
         </div>
         <div className="text-left">
           <div className="text-sm font-semibold text-white leading-tight">{profileName}</div>
-          <div className="w-full text-xs font-light text-discordgray-400 relative overflow-hidden">
+          <div className="w-[5.5rem] text-xs font-light text-discordgray-400 relative overflow-hidden">
             {customMessage ? (
               <>
-                <span className="block max-w-[5.5rem] truncate transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0">
+                <span className="block truncate transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0">
                   {customMessage}
                 </span>
                 <span className="block transition-all duration-150 ease-linear absolute -bottom-5 group-hover:bottom-0 truncate">
