@@ -24,8 +24,8 @@ const UserPresenceInteractor = () => {
   const { data: user } = trpc.useQuery(["user.get-user"]);
 
   return (
-    <div className="w-full h-full flex items-center justify-between group bg-discordgray-750 pr-2">
-      <div className="flex-0 pl-1">
+    <div className="w-full h-full grid grid-cols-8 bg-discordgray-750 p-1.5 group">
+      <div className="col-span-5 h-full">
         {user && (
           <UserProfile
             customMessage={user.publicMessage}
@@ -36,7 +36,7 @@ const UserPresenceInteractor = () => {
           />
         )}
       </div>
-      <div className="flex-1 w-20 flex items-center justify-end gap-3">
+      <div className="col-span-3 h-full flex items-center justify-end gap-3 pr-1">
         <button type="button" className="text-discordgray-400" onClick={() => toggleMicrophoneState()}>
           {isMicrophoneTurnedOn ? <MicrophoneUnmutedIcon /> : <MicrophoneMutedIcon />}
         </button>
@@ -92,7 +92,7 @@ const UserProfile: React.FC<{
   };
 
   return (
-    <Popover>
+    <Popover className="h-full">
       <Transition
         enter="transition duration-150 ease-out"
         enterFrom="transform scale-95 opacity-0"
@@ -204,16 +204,16 @@ const UserProfile: React.FC<{
       </Transition>
       <Popover.Button
         ref={interactorRef}
-        className="h-10 flex items-center gap-1 cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 p-2 pl-0 select-none"
+        className="cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 my-0.5 select-none outline-none focus:outline-none h-full flex items-center"
       >
-        <div className="flex-0 w-10 p-1 relative">
+        <div className="w-8 relative pl-1">
           {profilePicture ? (
             <>
               <Image
                 src={profilePicture}
                 className="w-full object-cover rounded-full"
-                width={40}
-                height={40}
+                width={50}
+                height={50}
                 alt="profile picture"
               />
             </>
@@ -227,12 +227,12 @@ const UserProfile: React.FC<{
             color={lcOnlStatus === "online" ? "green" : lcOnlStatus === "away" ? "amber" : "red"}
           />
         </div>
-        <div className="flex-1 text-left">
+        <div className="text-left">
           <div className="text-sm font-semibold text-white leading-tight">{profileName}</div>
-          <div className="text-xs font-light text-discordgray-400 relative overflow-hidden">
+          <div className="w-full text-xs font-light text-discordgray-400 relative overflow-hidden">
             {customMessage ? (
               <>
-                <span className="block transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0 truncate">
+                <span className="block max-w-[6.5rem] truncate font-mono transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0">
                   {customMessage}
                 </span>
                 <span className="block transition-all duration-150 ease-linear absolute -bottom-5 group-hover:bottom-0 truncate">

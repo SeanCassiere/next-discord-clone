@@ -83,7 +83,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
 
   return (
     <nav className="small-scroller flex-0 overflow-y-auto overflow-x-hidden h-screen bg-discordgray-900 shadow-lg pt-1">
-      <div aria-label="servers" className="w-20 flex flex-col">
+      <div aria-label="servers" className="w-[calc(4.5rem)] flex flex-col">
         {serverList.map((option) => (
           <React.Fragment key={`server-list-${option.id}`}>
             {(option.type === "app-navigation" || option.type === "app-interaction") && (
@@ -143,7 +143,7 @@ const SideBarIcon: React.FC<
   const indicatorClassName = cn(
     "absolute",
     "w-2",
-    "-left-5",
+    "-left-4",
     "rounded-r-sm",
     "origin-left",
     "transition-all",
