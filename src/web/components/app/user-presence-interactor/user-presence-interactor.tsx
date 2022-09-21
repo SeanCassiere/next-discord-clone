@@ -16,11 +16,13 @@ import PencilIcon from "../icons/pencil";
 import ChevronRightIcon from "../icons/chevron-right";
 import ClipboardIcon from "../icons/clipboard";
 import XCircleFilledIcon from "../icons/x-circle-filled";
+import { useUserInteractorStore } from "../../../hooks/stores/useUserInteractorStore";
 
 const UserPresenceInteractor = () => {
-  const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
-  const [headphonesEnabled, setHeadphonesEnabled] = useState(false);
+  const { isMicrophoneTurnedOn, isSoundTurnedOn, toggleMicrophoneState, toggleSoundState } = useUserInteractorStore();
+
   const { data: user } = trpc.useQuery(["user.get-user"]);
+
   return (
     <div className="w-full h-full flex items-center justify-between group bg-discordgray-750 pr-2">
       <div className="flex-0 pl-1">
@@ -35,11 +37,11 @@ const UserPresenceInteractor = () => {
         )}
       </div>
       <div className="flex-1 w-20 flex items-center justify-end gap-3">
-        <button type="button" className="text-discordgray-400" onClick={() => setMicrophoneEnabled((prev) => !prev)}>
-          {microphoneEnabled ? <MicrophoneUnmutedIcon /> : <MicrophoneMutedIcon />}
+        <button type="button" className="text-discordgray-400" onClick={() => toggleMicrophoneState()}>
+          {isMicrophoneTurnedOn ? <MicrophoneUnmutedIcon /> : <MicrophoneMutedIcon />}
         </button>
-        <button type="button" className="text-discordgray-400" onClick={() => setHeadphonesEnabled((prev) => !prev)}>
-          {headphonesEnabled ? <HeadphoneUnmuted /> : <HeadphoneMuted />}
+        <button type="button" className="text-discordgray-400" onClick={() => toggleSoundState()}>
+          {isSoundTurnedOn ? <HeadphoneUnmuted /> : <HeadphoneMuted />}
         </button>
         <button type="button" className="text-discordgray-400">
           <SettingsCog />
