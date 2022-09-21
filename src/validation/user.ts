@@ -14,10 +14,12 @@ export const CompleteUserRegistrationSchema = z.object({
   username: usernameValidation,
 });
 
+export const messageMaxLength = 25;
+
 export const SetUserPublicMessageSchema = z.object({
   message: z
     .string({ description: "message" })
     .min(1, "Message must contain at least 1 character(s)")
-    .max(18, "Message must be less than 18 character(s)")
+    .max(messageMaxLength, `Message must be less than ${messageMaxLength} character(s)`)
     .nullable(),
 });

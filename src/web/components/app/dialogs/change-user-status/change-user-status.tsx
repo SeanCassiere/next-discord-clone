@@ -1,11 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useDialogStore } from "../../../../hooks/stores/useDialogStore";
 import { trpc } from "../../../../../utils/trpc";
-import { SetUserPublicMessageSchema } from "../../../../../validation/user";
+import { messageMaxLength, SetUserPublicMessageSchema } from "../../../../../validation/user";
 import Input from "../../form/Input";
 import RocketLineIcon from "../../icons/rocket-line";
 
@@ -14,17 +14,21 @@ const ChangeUserStatusDialog: React.FC = () => {
   const trpcUtils = trpc.useContext();
   const { data: user } = trpc.useQuery(["user.get-user"]);
 
+  const [typingMessage, setTypingMessage] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm({ resolver: zodResolver(SetUserPublicMessageSchema) });
 
   trpc.useQuery(["user.get-user"], {
     onSuccess: (data) => {
       if (!data) return;
       setValue("message", data.publicMessage);
+      setTypingMessage(data.publicMessage ?? "");
     },
   });
 
@@ -93,15 +97,23 @@ const ChangeUserStatusDialog: React.FC = () => {
                   >
                     <Input
                       label="Message"
+                      placeholder="I'm currently..."
                       errorText={
                         errors?.message?.message && typeof errors?.message?.message === "string"
                           ? errors?.message?.message
                           : undefined
                       }
-                      {...register("message")}
+                      {...register("message", {
+                        onChange: (evt) => {
+                          setTypingMessage(evt.target.value);
+                        },
+                      })}
                       name="message"
                       type="text"
                     />
+                    <span className="text-xs text-right text-gray-300 -mt-2">
+                      {String(typingMessage).length}/{messageMaxLength}
+                    </span>
 
                     <div className="mt-5 sm:mt-6">
                       <button

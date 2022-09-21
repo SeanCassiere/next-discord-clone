@@ -36,7 +36,7 @@ const UserPresenceInteractor = () => {
           />
         )}
       </div>
-      <div className="col-span-3 h-full flex items-center justify-end gap-3 pr-1">
+      <div className="col-span-3 h-full flex items-center justify-end gap-3 pr-1 pt-0.5">
         <button type="button" className="text-discordgray-400" onClick={() => toggleMicrophoneState()}>
           {isMicrophoneTurnedOn ? <MicrophoneUnmutedIcon /> : <MicrophoneMutedIcon />}
         </button>
@@ -204,16 +204,16 @@ const UserProfile: React.FC<{
       </Transition>
       <Popover.Button
         ref={interactorRef}
-        className="cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 my-0.5 select-none outline-none focus:outline-none h-full flex items-center"
+        className="cursor-pointer rounded transition-all duration-200 hover:bg-discordgray-600 my-0.5 select-none outline-none focus:outline-none h-full flex items-center gap-2"
       >
-        <div className="w-8 relative pl-1">
+        <div className="w-10 relative pl-1">
           {profilePicture ? (
             <>
               <Image
                 src={profilePicture}
                 className="w-full object-cover rounded-full"
-                width={50}
-                height={50}
+                width={40}
+                height={40}
                 alt="profile picture"
               />
             </>
@@ -232,7 +232,7 @@ const UserProfile: React.FC<{
           <div className="w-full text-xs font-light text-discordgray-400 relative overflow-hidden">
             {customMessage ? (
               <>
-                <span className="block max-w-[6.5rem] truncate font-mono transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0">
+                <span className="block max-w-[5.5rem] truncate transition-opacity duration-200 ease-in-out opacity-100 group-hover:opacity-0">
                   {customMessage}
                 </span>
                 <span className="block transition-all duration-150 ease-linear absolute -bottom-5 group-hover:bottom-0 truncate">
@@ -270,8 +270,8 @@ const PictureIndicator: React.FC<{
     "rounded-full",
     {
       absolute: absoluteSmall,
-      "bottom-0": absoluteSmall,
-      "right-0.5": absoluteSmall,
+      "-bottom-0.5": absoluteSmall,
+      "-right-0.5": absoluteSmall,
     },
     {
       absolute: absoluteLarge,
@@ -288,7 +288,7 @@ const PictureIndicator: React.FC<{
       "bg-red-500": color === "red",
     },
     "border-4",
-    "border-discordgray-900"
+    "border-discordgray-800"
   );
   return <span className={classNames} />;
 };
