@@ -65,6 +65,15 @@ const ChangeUserStatusDialog: React.FC = () => {
           >
             <div className="relative inline-block align-bottom bg-discordgray-700 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
               <div>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => toggleUserMessageDialog(false)}
+                    className="w-6 h-6 font-mono flex items-center justify-center shadow rounded transition-all duration-100 bg-discordgray-900 hover:bg-discordgray-800 text-gray-400 hover:text-white focus:text-white"
+                  >
+                    &times;
+                  </button>
+                </div>
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-200 text-green-600">
                   <RocketLineIcon />
                 </div>
