@@ -1,20 +1,42 @@
 import React from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Popover, Transition } from "@headlessui/react";
 
 import { trpc, inferQueryOutput } from "../../../../utils/trpc";
 import UserPresenceInteractor from "../user-presence-interactor";
 import ServerChannelDefaultIcon from "../icons/server-channel-default";
 import ServerChannelProtectedIcon from "../icons/server-channel-protected";
 import ServerChannelAnnouncementIcon from "../icons/server-channel-announcement";
+import ServerExitIcon from "../icons/server-exit";
+import PencilIcon from "../icons/pencil";
+import ChevronDownIcon from "../icons/chevron-down";
+import TimesIcon from "../icons/times";
 
-const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: string }> = ({
-  serverId,
-  activeChannelId,
-}) => {
+const HeaderDivider = () => (
+  <hr className="bg-discordgray-800 border border-discordgray-800 rounded-full my-1" aria-hidden="true" />
+);
+const HeaderOption: React.FC<
+  { children: React.ReactNode } & React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  >
+> = ({ children, ...props }) => (
+  <button className={cn("my-0.5", "px-1", "w-full", "text-xs", "font-medium")} {...props}>
+    {children}
+  </button>
+);
+
+type ServerBasicDetails = inferQueryOutput<"server.get-basic-server-details-by-id">;
+
+const ServerChannelSidebar: React.FC<{
+  serverId: string;
+  activeChannelId?: string;
+  serverDetails: ServerBasicDetails;
+}> = ({ serverId, activeChannelId, serverDetails }) => {
   const router = useRouter();
   const trpcUtils = trpc.useContext();
+
   const { data } = trpc.useQuery(["server.get-user-channels-for-server", { serverId }]);
   const { mutate: storeViewedChannelForServer } = trpc.useMutation(["server.set-last-viewed-server-channel-for-user"]);
 
@@ -32,7 +54,46 @@ const ServerChannelSidebar: React.FC<{ serverId: string; activeChannelId?: strin
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-0 bg-red-200 h-12">sidebar header</div>
+      <Popover className="relative select-none">
+        {({ open: serverMenuOpen }) => (
+          <>
+            <Popover.Button className="flex-0 w-full h-12 text-white bg-discordgray-800 hover:bg-discordgray-700 border-b border-b-discordgray-900 px-4 outline-none focus:outline-none">
+              <div className="h-full flex justify-between items-center">
+                <h1 className="text-lg">{serverDetails?.name}</h1>
+                <span className="font-mono">{serverMenuOpen ? <TimesIcon /> : <ChevronDownIcon />}</span>
+              </div>
+            </Popover.Button>
+            <Transition
+              enter="transition ease-out duration-75"
+              enterFrom="transform scale-95 opacity-0"
+              enterTo="transform scale-100 opacity-100"
+              leave="transition duration-75 ease-out"
+              leaveFrom="transform scale-100 opacity-100"
+              leaveTo="transform scale-95 opacity-0"
+            >
+              <Popover.Panel className="absolute top-full shadow-md left-2.5 right-2.5 mt-2 bg-discordgray-900 rounded-sm p-2">
+                <HeaderOption>
+                  <div className="flex justify-between items-center rounded-sm px-2 py-1.5 transition-all duration-150 bg-discordgray-900 hover:bg-indigo-600 text-gray-300 hover:text-white">
+                    <span>Edit server</span>
+                    <span>
+                      <PencilIcon />
+                    </span>
+                  </div>
+                </HeaderOption>
+                <HeaderDivider />
+                <HeaderOption>
+                  <div className="flex justify-between items-center rounded-sm px-2 py-1.5 transition-all duration-150 bg-discordgray-900 hover:bg-red-600 text-red-500 hover:text-white">
+                    <span>Leave server</span>
+                    <span>
+                      <ServerExitIcon />
+                    </span>
+                  </div>
+                </HeaderOption>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
       <div className="flex-1 overflow-y-scroll text-gray-200 small-scroller channel-bar">
         {data && data.channels.filter((c) => c.parent === null).length > 0 && (
           <div className="mx-2 my-5">

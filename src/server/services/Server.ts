@@ -25,6 +25,10 @@ export type ServerService_GetUserChannelsForServerProps = {
   serverId: string;
   userId: string;
 };
+export type ServerService_GetBasicServerDetailsByIdProps = {
+  serverId: string;
+  userId: string;
+};
 
 type ServerIconTypes = "server-channel-default" | "server-channel-protected" | "server-channel-announcements";
 
@@ -147,6 +151,10 @@ class Server {
         updatedAt: c.updatedAt,
       })),
     };
+  }
+
+  async getBasicServerDetailsById(props: ServerService_GetBasicServerDetailsByIdProps) {
+    return await prisma.server.findFirst({ where: { id: props.serverId } });
   }
 }
 
