@@ -29,6 +29,11 @@ export type ServerService_GetBasicServerDetailsByIdProps = {
   serverId: string;
   userId: string;
 };
+export type ServerService_GetChannelDetailsByIdProps = {
+  serverId: string;
+  channelId: string;
+  userId: string;
+};
 
 type ServerIconTypes = "server-channel-default" | "server-channel-protected" | "server-channel-announcements";
 
@@ -163,6 +168,14 @@ class Server {
       return null;
     }
     return server;
+  }
+
+  async getChannelDetailsById(props: ServerService_GetChannelDetailsByIdProps) {
+    const channel = await prisma.serverChannel.findFirst({ where: { id: props.channelId, serverId: props.serverId } });
+    if (!channel) {
+      return null;
+    }
+    return channel;
   }
 }
 
