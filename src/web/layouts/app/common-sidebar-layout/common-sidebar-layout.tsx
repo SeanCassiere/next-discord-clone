@@ -1,6 +1,6 @@
 import React from "react";
 
-const ChannelLayout: React.FC<{
+const CommonSidebarLayout: React.FC<{
   Sidebar?: React.ReactNode;
   children?: React.ReactNode;
 }> = ({ children, Sidebar }) => {
@@ -12,4 +12,4 @@ const ChannelLayout: React.FC<{
   );
 };
 
-export default ChannelLayout;
+export default CommonSidebarLayout;

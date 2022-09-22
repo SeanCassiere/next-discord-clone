@@ -1,6 +1,6 @@
 import React from "react";
 import MeChannelSidebar from "../../../components/app/me-channel-sidebar";
-import ChannelLayout from "../channel-layout";
+import CommonSidebarLayout from "../common-sidebar-layout";
 
 const MeLayout: React.FC<{ channelId?: string; titleSetter: (title: string) => void }> = ({
   channelId,
@@ -11,14 +11,14 @@ const MeLayout: React.FC<{ channelId?: string; titleSetter: (title: string) => v
   }
 
   return (
-    <ChannelLayout Sidebar={<MeChannelSidebar activeChannelId={channelId} />}>
+    <CommonSidebarLayout Sidebar={<MeChannelSidebar activeChannelId={channelId} />}>
       <div className="h-full">
         <ul>
           <li>@me dashboard</li>
           <li>ChannelId: {channelId}</li>
         </ul>
       </div>
-    </ChannelLayout>
+    </CommonSidebarLayout>
   );
 };
 

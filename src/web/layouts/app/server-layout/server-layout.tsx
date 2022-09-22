@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { trpc } from "../../../../utils/trpc";
 import ServerChannelSidebar from "../../../components/app/server-channel-sidebar";
-import ChannelLayout from "../channel-layout";
+import CommonSidebarLayout from "../common-sidebar-layout";
 
 const ServerLayout: React.FC<{ serverId: string; channelId?: string; titleSetter: (title: string) => void }> = ({
   serverId,
@@ -43,7 +43,7 @@ const ServerLayout: React.FC<{ serverId: string; channelId?: string; titleSetter
   }
 
   return (
-    <ChannelLayout
+    <CommonSidebarLayout
       Sidebar={<ServerChannelSidebar serverId={serverId} activeChannelId={channelId} serverDetails={server ?? null} />}
     >
       <div className="h-full">
@@ -58,7 +58,7 @@ const ServerLayout: React.FC<{ serverId: string; channelId?: string; titleSetter
           </ul>
         )}
       </div>
-    </ChannelLayout>
+    </CommonSidebarLayout>
   );
 };
 
