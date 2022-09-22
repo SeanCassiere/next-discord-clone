@@ -1,5 +1,5 @@
 import React, { useId } from "react";
-import cn from "classnames";
+import classNames from "classnames";
 import ExclamationIcon from "../icons/exclamation";
 
 const Input = React.forwardRef<
@@ -21,7 +21,7 @@ const Input = React.forwardRef<
           ref={ref}
           id={id}
           {...inputProps}
-          className={cn(
+          className={classNames(
             "block",
             "w-full",
             "bg-discordgray-900",

@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import cn from "classnames";
+import classNames from "classnames";
 import { Disclosure, Popover, Transition } from "@headlessui/react";
 
 import { trpc, inferQueryOutput } from "../../../../utils/trpc";
@@ -22,7 +22,7 @@ const HeaderOption: React.FC<
     HTMLButtonElement
   >
 > = ({ children, ...props }) => (
-  <button className={cn("my-0.5", "px-1", "w-full", "text-xs", "font-medium")} {...props}>
+  <button className={classNames("my-0.5", "px-1", "w-full", "text-xs", "font-medium")} {...props}>
     {children}
   </button>
 );
@@ -165,7 +165,7 @@ const ChannelLink = ({
   return (
     <li
       key={keyId}
-      className={cn(
+      className={classNames(
         "cursor-pointer",
         "my-2",
         "flex",

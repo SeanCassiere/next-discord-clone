@@ -1,5 +1,5 @@
 import React from "react";
-import cn from "classnames";
+import classNames from "classnames";
 import { useRouter } from "next/router";
 import UserPresenceInteractor from "../user-presence-interactor";
 
@@ -40,20 +40,22 @@ const SidebarOptionContainer: React.FC<
     HTMLDivElement
   >
 > = ({ children, selected, ...rest }) => {
-  const classNames = cn(
-    "px-4",
-    "py-2.5",
-    "rounded",
-    "cursor-pointer",
-    "select-none",
-    "text-base",
-    {
-      "bg-discordgray-600": selected,
-    },
-    { "hover:bg-discordgray-700": !selected }
-  );
   return (
-    <div {...rest} className={classNames}>
+    <div
+      {...rest}
+      className={classNames(
+        "px-4",
+        "py-2.5",
+        "rounded",
+        "cursor-pointer",
+        "select-none",
+        "text-base",
+        {
+          "bg-discordgray-600": selected,
+        },
+        { "hover:bg-discordgray-700": !selected }
+      )}
+    >
       {children}
     </div>
   );

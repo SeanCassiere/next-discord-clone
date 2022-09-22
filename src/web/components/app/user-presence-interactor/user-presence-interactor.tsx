@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import cn from "classnames";
+import classNames from "classnames";
 import { Popover, Transition } from "@headlessui/react";
 import Image from "next/future/image";
 
@@ -160,7 +160,7 @@ const UserProfile: React.FC<{
                   {profileName}
                   <span className="text-gray-300">{profileTag}</span>
                 </div>
-                <span className={cn({ "opacity-0": !showClipboard, "opacity-100": showClipboard })}>
+                <span className={classNames({ "opacity-0": !showClipboard, "opacity-100": showClipboard })}>
                   <ClipboardIcon />
                 </span>
               </div>
@@ -274,38 +274,41 @@ const PictureIndicator: React.FC<{
   absoluteSmall?: boolean;
   absoluteLarge?: boolean;
 }> = ({ color, larger, absoluteSmall, absoluteLarge }) => {
-  const classNames = cn(
-    "z-10",
-    {
-      "w-4": !larger,
-      "h-4": !larger,
-    },
-    {
-      "w-6": larger,
-      "h-6": larger,
-    },
-    "rounded-full",
-    {
-      absolute: absoluteSmall,
-      "-bottom-0.5": absoluteSmall,
-      "-right-0.5": absoluteSmall,
-    },
-    {
-      absolute: absoluteLarge,
-      "bottom-0": absoluteLarge,
-      "right-1": absoluteLarge,
-    },
-    {
-      "bg-green-500": color === "green",
-    },
-    {
-      "bg-amber-500": color === "amber",
-    },
-    {
-      "bg-red-500": color === "red",
-    },
-    "border-4",
-    "border-discordgray-800"
+  return (
+    <span
+      className={classNames(
+        "z-10",
+        {
+          "w-4": !larger,
+          "h-4": !larger,
+        },
+        {
+          "w-6": larger,
+          "h-6": larger,
+        },
+        "rounded-full",
+        {
+          absolute: absoluteSmall,
+          "-bottom-0.5": absoluteSmall,
+          "-right-0.5": absoluteSmall,
+        },
+        {
+          absolute: absoluteLarge,
+          "bottom-0": absoluteLarge,
+          "right-1": absoluteLarge,
+        },
+        {
+          "bg-green-500": color === "green",
+        },
+        {
+          "bg-amber-500": color === "amber",
+        },
+        {
+          "bg-red-500": color === "red",
+        },
+        "border-4",
+        "border-discordgray-800"
+      )}
+    />
   );
-  return <span className={classNames} />;
 };
