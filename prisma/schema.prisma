@@ -69,6 +69,7 @@ model Server {
     name        String
     description String  @default("")
     image       String?
+    serverType  String  @default("PUBLIC")
 
     connections   ServerConnection[]
     channels      ServerChannel[]

@@ -7,6 +7,7 @@ import ChevronRightIcon from "../../icons/chevron-right";
 import { JoinServerBody } from "./join-server";
 import { CreationVisibilityBody } from "./creation-visibility";
 import { CreationNameBody } from "./creation-name";
+import { CreateServerMenu } from "./menu";
 import { useSettingsScreenStore } from "../../../../hooks/stores/useSettingsScreenStore";
 
 type CreateServerMode = "menu" | "join" | "create-visibility" | "create-name";
@@ -14,6 +15,7 @@ export type CreateServerScreenProps = {
   changeMode: (mode: CreateServerMode) => void;
   mode: CreateServerMode;
   show: boolean;
+  closeDialog: () => void;
 };
 
 const CreateServerDialog = () => {
@@ -34,18 +36,13 @@ const CreateServerDialog = () => {
   const sharedProps = {
     mode,
     changeMode,
+    closeDialog,
   };
-
-  const isLargeBody = useMemo(() => {
-    const acceptedModes: CreateServerMode[] = ["join"];
-    if (acceptedModes.includes(mode)) return true;
-    return false;
-  }, [mode]);
 
   return (
     <Transition show={isCreateServerOpen} as={Fragment}>
       <Dialog as="div" className="fixed z-50 inset-0 overflow-y-auto" onClose={closeDialog}>
-        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-150"
@@ -72,7 +69,7 @@ const CreateServerDialog = () => {
           >
             <div
               className={classNames(
-                // "relative",
+                "relative",
                 "inline-block",
                 "align-bottom",
                 "bg-gray-100",
@@ -81,23 +78,18 @@ const CreateServerDialog = () => {
                 "overflow-hidden",
                 "shadow-xl",
                 "transform",
-                "transition-all",
-                "duration-150",
-                "h-auto",
-                {
-                  "sm:h-[calc(30rem)]": isLargeBody,
-                  "sm:h-[calc(25.5rem)]": !isLargeBody,
-                },
                 "max-w-sm",
-                "sm:my-8",
                 "sm:align-middle",
                 "sm:max-w-md",
-                "w-screen"
+                "w-screen",
+                "h-[32rem]",
+                "transition-all",
+                "duration-150"
               )}
             >
-              <div className="flex flex-col h-full w-full">
-                <div className="py-6 flex-1">
-                  <div className="px-6 flex justify-end">
+              <div className="block absolute inset-0">
+                <div className="pt-6 h-full flex flex-col">
+                  <div className="flex-0 px-6 flex justify-end">
                     <button
                       type="button"
                       onClick={closeDialog}
@@ -106,10 +98,12 @@ const CreateServerDialog = () => {
                       &times;
                     </button>
                   </div>
-                  <MenuBody {...sharedProps} show={mode === "menu"} />
-                  <JoinServerBody {...sharedProps} show={mode === "join"} />
-                  <CreationVisibilityBody {...sharedProps} show={mode === "create-visibility"} />
-                  <CreationNameBody {...sharedProps} show={mode === "create-name"} />
+                  <div className="flex-1">
+                    <CreateServerMenu {...sharedProps} show={mode === "menu"} />
+                    <JoinServerBody {...sharedProps} show={mode === "join"} />
+                    <CreationVisibilityBody {...sharedProps} show={mode === "create-visibility"} />
+                    <CreationNameBody {...sharedProps} show={mode === "create-name"} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -120,18 +114,16 @@ const CreateServerDialog = () => {
   );
 };
 
-export const CreateServerFooter: React.FC<{ isLargeFooter?: boolean; children: React.ReactNode }> = ({
-  children,
-  isLargeFooter = false,
-}) => {
+export const CreateServerFooter: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div
       className={classNames(
         "px-6",
+        "py-4",
         "relative",
         "transition-all",
         "duration-150",
-        { "h-28": isLargeFooter, "h-20": !isLargeFooter },
+        // { "h-28": isLargeFooter, "h-20": !isLargeFooter },
         "bg-gray-200"
       )}
     >
@@ -146,20 +138,19 @@ export const CreateServerWrapper: React.FC<{
   exitLeft: boolean;
   enterLeft: boolean;
 }> = ({ children, show, exitLeft, enterLeft }) => (
-  <div>
-    <Transition
-      enter="ease-out duration-150"
-      enterFrom={classNames("opacity-0", { "translate-x-full": !enterLeft, "-translate-x-full": enterLeft })}
-      enterTo={classNames("opacity-100", "translate-x-0")}
-      leave="ease-in duration-150"
-      leaveFrom={classNames("opacity-100", "translate-x-0")}
-      leaveTo={classNames("opacity-50", { "translate-x-full": !exitLeft, "-translate-x-full": exitLeft })}
-      show={show}
-      as="div"
-    >
-      {children}
-    </Transition>
-  </div>
+  <Transition
+    enter="ease-out duration-150"
+    enterFrom={classNames("opacity-0", { "translate-x-full": !enterLeft, "-translate-x-full": enterLeft })}
+    enterTo={classNames("opacity-100", "translate-x-0")}
+    leave="ease-in duration-150"
+    leaveFrom={classNames("opacity-100", "translate-x-0")}
+    leaveTo={classNames("opacity-50", { "translate-x-full": !exitLeft, "-translate-x-full": exitLeft })}
+    show={show}
+    as="div"
+    className="h-full"
+  >
+    {children}
+  </Transition>
 );
 
 export const CreateServerBigOption: React.FC<
@@ -178,45 +169,6 @@ export const CreateServerBigOption: React.FC<
         <ChevronRightIcon />
       </span>
     </button>
-  );
-};
-
-const MenuBody: React.FC<CreateServerScreenProps> = ({ changeMode, mode, show }) => {
-  return (
-    <CreateServerWrapper
-      show={show}
-      exitLeft={mode === "create-visibility" || mode === "join"}
-      enterLeft={mode === "menu"}
-    >
-      <div className="select-none px-6">
-        <h1 className="mt-2 font-extrabold text-center text-3xl text-gray-800">Create a server</h1>
-        <p className="mt-2 mb-4 text-sm text-center text-gray-500">
-          Your server is where you and your friends hang out. Make yours and start talking.
-        </p>
-        <CreateServerBigOption
-          onClick={() => {
-            changeMode("create-visibility");
-          }}
-        >
-          Create My Own
-        </CreateServerBigOption>
-      </div>
-      <div>
-        <CreateServerFooter isLargeFooter>
-          <div className="flex flex-col gap-2 mt-20 pt-4">
-            <h2 className="text-xl text-center text-gray-700 font-semibold">Have an invite already?</h2>
-            <button
-              className="px-4 py-2.5 transition-all duration-150 rounded text-center bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium"
-              onClick={() => {
-                changeMode("join");
-              }}
-            >
-              Join a server
-            </button>
-          </div>
-        </CreateServerFooter>
-      </div>
-    </CreateServerWrapper>
   );
 };
 

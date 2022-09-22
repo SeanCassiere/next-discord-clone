@@ -9,17 +9,13 @@ type StoreType = {
   setSubScreen: (subScreen: string | null) => void;
 
   createServerInput: {
-    name: string;
     discoverable: boolean;
-    isReady: boolean;
   };
   resetCreateServerInput: () => void;
   updateCreateServerInput: (dto: { [key: string]: string | boolean }) => void;
 };
 const initialServerInput: StoreType["createServerInput"] = {
-  name: "",
   discoverable: true,
-  isReady: false,
 };
 
 export const useSettingsScreenStore = create<StoreType>((set, get) => ({
@@ -54,12 +50,6 @@ export const useSettingsScreenStore = create<StoreType>((set, get) => ({
     [...Object.entries(dto)].forEach(([key, value]) => {
       if (key === "discoverable") {
         updateObject = { ...updateObject, discoverable: value as boolean };
-      }
-      if (key === "name") {
-        updateObject = { ...updateObject, name: value as string };
-      }
-      if (key === "isReady") {
-        updateObject = { ...updateObject, isReady: value as boolean };
       }
     });
 

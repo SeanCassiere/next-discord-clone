@@ -10,10 +10,13 @@ const defaultRoles = [
   { key: KEY_MEMBER, display: "Member", isPublic: false, isInitial: true },
 ];
 
+type ServerType = "PUBLIC" | "PRIVATE";
+
 export type ServerService_CreateNewServerByUserProps = {
   ownerId: string;
   name: string;
   description: string;
+  serverType: ServerType;
 };
 export type ServerService_GetServerListForUserProps = { userId: string };
 export type ServerService_SetLastVisitedChannelForServer = {
@@ -61,6 +64,7 @@ class Server {
       data: {
         name: name,
         description: description,
+        serverType: props.serverType,
         roles: {
           create: defaultRoles.map((role) => ({
             key: role.key,
@@ -91,13 +95,24 @@ class Server {
       });
     }
 
-    const server = await prisma.server.findUnique({ where: { id: createServer.id } })!;
+    const defaultGroup = await prisma.serverChannelGroup.create({
+      data: { name: "Text channels", server: { connect: { id: createServer.id } } },
+    });
+
+    await prisma.serverChannel.create({
+      data: {
+        name: "Welcome",
+        server: { connect: { id: createServer.id } },
+        type: "server",
+        parent: { connect: { id: defaultGroup.id } },
+      },
+    });
 
     return {
-      id: server!.id,
-      name: server!.name,
-      description: server!.description,
-      image: server!.image,
+      id: createServer.id,
+      name: createServer.name,
+      description: createServer.description,
+      image: createServer.image,
     };
   }
 

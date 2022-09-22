@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CreateServerRegistrationSchema } from "../../validation/server";
 import { createNewServerByUser } from "../functions/server/create-new-server-by-user";
 import { getBasicServerDetailsById } from "../functions/server/get-basic-server-details-by-id";
 import { getChannelDetailsById } from "../functions/server/get-channel-details-by-id";
@@ -48,7 +49,7 @@ export const serverRouter = createProtectedRouter()
     },
   })
   .mutation("create-new-server-by-user", {
-    input: z.object({ name: z.string(), description: z.string().min(0) }),
+    input: CreateServerRegistrationSchema,
     resolve: async ({ ctx, input }) => {
       const { session } = ctx;
       const { user } = session;
@@ -57,6 +58,7 @@ export const serverRouter = createProtectedRouter()
         ownerId: user.id,
         name: input.name,
         description: input.description,
+        serverType: input.serverType,
       });
     },
   });

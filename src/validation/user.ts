@@ -4,7 +4,7 @@ const usernameValidation = z
   .string({ description: "Username" })
   .regex(new RegExp(/^[a-zA-Z0-9]+$/), "Should not contain special characters")
   .min(4, "Username must contain at least 4 character(s)")
-  .max(20, "Username must be less than 45 character(s)");
+  .max(20, "Username must be less than 20 character(s)");
 
 export const CompleteUserRegistrationSchema = z.object({
   name: z
