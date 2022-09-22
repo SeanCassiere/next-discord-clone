@@ -14,7 +14,7 @@ import PersistentAppWrapper from "../web/layouts/app/persistent-app-wrapper";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 
-const appRoutes = ["/channels"];
+const appRoutes = ["/channels", "/guilds"];
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   const router = useRouter();

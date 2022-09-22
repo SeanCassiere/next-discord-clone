@@ -9,6 +9,9 @@ type StoreType = {
 
   isLogoutOpen: boolean;
   toggleLogout: (option?: boolean) => void;
+
+  isCreateServerOpen: boolean;
+  toggleCreateServer: (option?: boolean) => void;
 };
 
 export const useDialogStore = create<StoreType>((set, get) => ({
@@ -40,8 +43,19 @@ export const useDialogStore = create<StoreType>((set, get) => ({
     if (option !== undefined) {
       value = option;
     } else {
-      value = !get().isCompleteRegistrationDialogOpen;
+      value = !get().isLogoutOpen;
     }
     set({ isLogoutOpen: value });
+  },
+
+  isCreateServerOpen: false,
+  toggleCreateServer: (option) => {
+    let value;
+    if (option !== undefined) {
+      value = option;
+    } else {
+      value = !get().isCreateServerOpen;
+    }
+    set({ isCreateServerOpen: value });
   },
 }));

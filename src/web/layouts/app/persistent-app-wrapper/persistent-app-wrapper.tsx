@@ -10,6 +10,7 @@ import ChangeUserStatusDialog from "../../../components/app/dialogs/change-user-
 import SettingsDialog from "../../../components/app/dialogs/settings-dialog";
 import SettingsLayout from "../settings-layout";
 import LogoutDialog from "../../../components/app/dialogs/logout-dialog";
+import CreateServerDialog from "../../../components/app/dialogs/create-server-dialog/create-server-dialog";
 
 const PersistentAppWrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const { status } = useSession();
@@ -41,6 +42,7 @@ const PersistentAppWrapper: React.FC<{ children?: React.ReactNode }> = ({ childr
         <SettingsDialog>
           <SettingsLayout />
         </SettingsDialog>
+        <CreateServerDialog />
         {isLoggedIn && <ServerListSidebar activeConversationId={activeConversationId} />}
         <div className="flex-1 h-screen max-w-[calc(100vw - w-16)] overflow-x-hidden">{children}</div>
       </div>

@@ -4,9 +4,11 @@ import { useRouter } from "next/router";
 import { FaIceCream, FaCompass, FaPlus } from "react-icons/fa";
 import { trpc } from "../../../../utils/trpc";
 import { getNameAbbreviation } from "../../../../utils/get-name-abbreviation";
+import { useDialogStore } from "../../../hooks/stores/useDialogStore";
 
 const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeConversationId }) => {
   const router = useRouter();
+  const { toggleCreateServer } = useDialogStore();
 
   const { data: serversForUser } = trpc.useQuery(["user.get-server-list-for-user"]);
 
@@ -67,7 +69,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
       name: "Add server",
       image: null,
       type: "app-interaction",
-      onClick: () => alert("Add a server"),
+      onClick: () => toggleCreateServer(true),
       iconComponent: <FaPlus size="22" />,
     });
     list.push({
@@ -75,11 +77,11 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
       name: "Discover",
       image: null,
       type: "app-interaction",
-      onClick: () => alert("Find server"),
+      onClick: () => router.push("/guilds"),
       iconComponent: <FaCompass size="22" />,
     });
     return list;
-  }, [activeConversationId, router, serversForUser]);
+  }, [activeConversationId, router, serversForUser, toggleCreateServer]);
 
   return (
     <nav className="small-scroller flex-0 overflow-y-auto overflow-x-hidden h-screen bg-discordgray-900 shadow-lg pt-1">
