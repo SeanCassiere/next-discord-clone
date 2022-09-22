@@ -6,12 +6,12 @@ const SettingsDialog: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const { isSettingsDialogOpen, toggleSettingsDialog } = useSettingsScreenStore();
   return (
     <Transition
-      enter="transition duration-75 ease-out"
-      enterFrom="transform scale-90 opacity-0"
+      enter="transition duration-150 ease-out"
+      enterFrom="transform scale-125 opacity-30"
       enterTo="transform scale-100 opacity-100"
-      leave="transition duration-750 ease-in-out"
+      leave="transition duration-150 ease-in"
       leaveFrom="transform scale-100 opacity-100"
-      leaveTo="transform scale-90 opacity-0"
+      leaveTo="transform scale-125 opacity-0"
       show={isSettingsDialogOpen}
       as={Fragment}
     >
