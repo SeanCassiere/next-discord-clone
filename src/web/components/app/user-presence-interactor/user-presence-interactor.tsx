@@ -6,6 +6,8 @@ import Image from "next/future/image";
 import { getNameAbbreviation } from "../../../../utils/get-name-abbreviation";
 import { trpc } from "../../../../utils/trpc";
 import { useDialogStore } from "../../../hooks/stores/useDialogStore";
+import { useUserInteractorStore } from "../../../hooks/stores/useUserInteractorStore";
+import { useSettingsScreenStore } from "../../../hooks/stores/useSettingsScreenStore";
 
 import MicrophoneMutedIcon from "../icons/microphone-muted";
 import MicrophoneUnmutedIcon from "../icons/microphone-unmuted";
@@ -16,10 +18,10 @@ import PencilIcon from "../icons/pencil";
 import ChevronRightIcon from "../icons/chevron-right";
 import ClipboardIcon from "../icons/clipboard";
 import XCircleFilledIcon from "../icons/x-circle-filled";
-import { useUserInteractorStore } from "../../../hooks/stores/useUserInteractorStore";
 
 const UserPresenceInteractor = () => {
   const { isMicrophoneTurnedOn, isSoundTurnedOn, toggleMicrophoneState, toggleSoundState } = useUserInteractorStore();
+  const { toggleSettingsDialog, subScreen } = useSettingsScreenStore();
 
   const { data: user } = trpc.useQuery(["user.get-user"]);
 
@@ -43,7 +45,13 @@ const UserPresenceInteractor = () => {
         <button type="button" className="text-discordgray-400" onClick={() => toggleSoundState()}>
           {isSoundTurnedOn ? <HeadphoneUnmuted /> : <HeadphoneMuted />}
         </button>
-        <button type="button" className="text-discordgray-400">
+        <button
+          type="button"
+          className="text-discordgray-400"
+          onClick={() =>
+            toggleSettingsDialog(true, subScreen ? { initialScreen: "my-account", subScreen: null } : undefined)
+          }
+        >
           <SettingsCog />
         </button>
       </div>
@@ -67,6 +75,7 @@ const UserProfile: React.FC<{
   const lcOnlStatus = onlineStatus.trim().toLowerCase();
 
   const { toggleUserMessageDialog } = useDialogStore();
+  const { toggleSettingsDialog } = useSettingsScreenStore();
 
   const [showClipboard, setShowClipboard] = useState(false);
 
@@ -104,7 +113,15 @@ const UserProfile: React.FC<{
         <Popover.Panel className="absolute z-10 left-1 bottom-4">
           <div className="bg-discordgray-900 w-72 shadow rounded pb-2">
             <div className="w-full h-16 rounded-t bg-red-200 bg-opacity-75 flex items-start justify-end p-2">
-              <button className="bg-gray-900 bg-opacity-25 rounded-3xl w-7 aspect-square text-sm flex items-center justify-center">
+              <button
+                className="bg-gray-900 bg-opacity-25 rounded-3xl w-7 aspect-square text-sm flex items-center justify-center"
+                onClick={() => {
+                  toggleSettingsDialog(true, {
+                    initialScreen: "my-profiles",
+                    subScreen: "user-profiles",
+                  });
+                }}
+              >
                 <PencilIcon />
               </button>
             </div>

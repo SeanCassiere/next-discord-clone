@@ -21,7 +21,6 @@ const ChangeUserStatusDialog: React.FC = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-    getValues,
   } = useForm({ resolver: zodResolver(SetUserPublicMessageSchema) });
 
   trpc.useQuery(["user.get-user"], {
