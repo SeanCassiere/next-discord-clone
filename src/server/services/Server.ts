@@ -154,7 +154,15 @@ class Server {
   }
 
   async getBasicServerDetailsById(props: ServerService_GetBasicServerDetailsByIdProps) {
-    return await prisma.server.findFirst({ where: { id: props.serverId } });
+    const server = await prisma.server.findFirst({ where: { id: props.serverId } });
+
+    const userInServer = await prisma.serverConnection.findFirst({
+      where: { serverId: props.serverId, userId: props.userId },
+    });
+    if (!userInServer) {
+      return null;
+    }
+    return server;
   }
 }
 
