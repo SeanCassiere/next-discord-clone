@@ -6,6 +6,9 @@ type StoreType = {
 
   isCompleteRegistrationDialogOpen: boolean;
   toggleCompleteRegistrationDialog: (option?: boolean) => void;
+
+  isLogoutOpen: boolean;
+  toggleLogout: (option?: boolean) => void;
 };
 
 export const useDialogStore = create<StoreType>((set, get) => ({
@@ -29,5 +32,16 @@ export const useDialogStore = create<StoreType>((set, get) => ({
       value = !get().isCompleteRegistrationDialogOpen;
     }
     set({ isCompleteRegistrationDialogOpen: value });
+  },
+
+  isLogoutOpen: false,
+  toggleLogout: (option) => {
+    let value;
+    if (option !== undefined) {
+      value = option;
+    } else {
+      value = !get().isCompleteRegistrationDialogOpen;
+    }
+    set({ isLogoutOpen: value });
   },
 }));

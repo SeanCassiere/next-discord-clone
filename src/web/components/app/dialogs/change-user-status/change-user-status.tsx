@@ -66,7 +66,7 @@ const ChangeUserStatusDialog: React.FC = () => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block align-bottom bg-discordgray-700 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+            <div className="relative inline-block align-bottom bg-discordgray-700 rounded px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
               <div>
                 <div className="flex justify-end">
                   <button
@@ -95,8 +95,8 @@ const ChangeUserStatusDialog: React.FC = () => {
                     className="mt-4 flex flex-col gap-2"
                   >
                     <Input
-                      label="Message"
-                      placeholder="I'm currently..."
+                      label="I'm currently"
+                      placeholder="watching a movie..."
                       errorText={
                         errors?.message?.message && typeof errors?.message?.message === "string"
                           ? errors?.message?.message

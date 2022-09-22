@@ -1,12 +1,13 @@
 import React from "react";
 import classNames from "classnames";
-import { signOut } from "next-auth/react";
 
+import { useDialogStore } from "../../../hooks/stores/useDialogStore";
 import { useSettingsScreenStore } from "../../../hooks/stores/useSettingsScreenStore";
 import LeaveIcon from "../../../components/app/icons/leave";
 
 const SettingsLayout = () => {
   const { currentScreen, setScreen, toggleSettingsDialog } = useSettingsScreenStore();
+  const { toggleLogout } = useDialogStore();
   const menuItems = [
     { id: "title-user-settings", children: "User settings", type: "title", onClick: undefined },
     {
@@ -48,7 +49,7 @@ const SettingsLayout = () => {
       ),
       type: "item",
       onClick: () => {
-        signOut({ callbackUrl: "/" });
+        toggleLogout(true);
       },
     },
     { id: 10000, children: null, type: "divider", onClick: undefined },

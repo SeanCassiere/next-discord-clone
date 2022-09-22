@@ -9,6 +9,7 @@ import CompleteRegistrationDialog from "../../../components/app/dialogs/complete
 import ChangeUserStatusDialog from "../../../components/app/dialogs/change-user-status";
 import SettingsDialog from "../../../components/app/dialogs/settings-dialog";
 import SettingsLayout from "../settings-layout";
+import LogoutDialog from "../../../components/app/dialogs/logout-dialog";
 
 const PersistentAppWrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const { status } = useSession();
@@ -34,6 +35,7 @@ const PersistentAppWrapper: React.FC<{ children?: React.ReactNode }> = ({ childr
   return (
     <React.Fragment>
       <div className="flex overflow-x-hidden h-screen max-h-screen sm:max-w-screen-sm md:max-w-screen-md lg:max-w-full">
+        <LogoutDialog />
         <CompleteRegistrationDialog />
         <ChangeUserStatusDialog />
         <SettingsDialog>
