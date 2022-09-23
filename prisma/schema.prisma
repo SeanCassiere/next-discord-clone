@@ -83,7 +83,7 @@ model Server {
 model ServerConnection {
     id String @id @default(cuid())
 
-    lastVisitedChannel   ServerChannel? @relation(fields: [lastVisitedChannelId], references: [id], onDelete: Cascade)
+    lastVisitedChannel   ServerChannel? @relation(fields: [lastVisitedChannelId], references: [id], onDelete: SetNull)
     lastVisitedChannelId String?
 
     role   ServerRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
