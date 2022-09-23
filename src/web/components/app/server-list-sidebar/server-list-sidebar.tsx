@@ -11,7 +11,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string | null }> = ({ 
   const router = useRouter();
   const { toggleCreateServer } = useDialogStore();
 
-  const { data: serversForUser } = trpc.useQuery(["user.get-server-list-for-user"]);
+  const { data: serversForUser } = trpc.useQuery(["user.get-server-list-for-user"], { refetchInterval: 25000 }); // refetch every 25 seconds
 
   const serverList = useMemo(() => {
     let list: {
@@ -100,7 +100,9 @@ const ServerListSideBar: React.FC<{ activeConversationId: string | null }> = ({ 
                     ? true
                     : false
                 )}
-                onClick={option.onClick}
+                onClick={() => {
+                  option.onClick();
+                }}
                 icon={option.iconComponent}
                 forceAriaSelection={option.forceAriaSelect}
               />

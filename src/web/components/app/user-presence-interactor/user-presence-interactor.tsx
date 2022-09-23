@@ -49,7 +49,12 @@ const UserPresenceInteractor = () => {
           type="button"
           className="text-discordgray-400"
           onClick={() =>
-            toggleSettingsDialog(true, subScreen ? { initialScreen: "my-account", subScreen: null } : undefined)
+            toggleSettingsDialog(
+              true,
+              subScreen
+                ? { initialScreen: "my-account", subScreen: null, context: "account", contextReference: null }
+                : { context: "account", contextReference: null }
+            )
           }
         >
           <SettingsCog />
@@ -119,6 +124,7 @@ const UserProfile: React.FC<{
                   toggleSettingsDialog(true, {
                     initialScreen: "my-profiles",
                     subScreen: "user-profiles",
+                    context: "account",
                   });
                 }}
               >

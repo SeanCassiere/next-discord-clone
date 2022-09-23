@@ -1,10 +1,22 @@
 import create from "zustand";
 
+type SettingsContext = "account" | "server" | "channel";
+
 type StoreType = {
   currentScreen: string;
   subScreen: string | null;
   isSettingsDialogOpen: boolean;
-  toggleSettingsDialog: (toValue?: boolean, opts?: { initialScreen: string; subScreen: string | null }) => void;
+  context: SettingsContext;
+  contextReference: string | null;
+  toggleSettingsDialog: (
+    toValue?: boolean,
+    opts?: {
+      initialScreen?: string;
+      subScreen?: string | null;
+      context?: SettingsContext;
+      contextReference?: string | null;
+    }
+  ) => void;
   setScreen: (screen: string) => void;
   setSubScreen: (subScreen: string | null) => void;
 
@@ -22,6 +34,8 @@ export const useSettingsScreenStore = create<StoreType>((set, get) => ({
   currentScreen: "my-account",
   subScreen: null,
   isSettingsDialogOpen: false,
+  context: "account",
+  contextReference: null,
   toggleSettingsDialog: (toValue, opts) => {
     let value;
     if (toValue !== undefined) {
@@ -31,7 +45,12 @@ export const useSettingsScreenStore = create<StoreType>((set, get) => ({
     }
     set({ isSettingsDialogOpen: value });
     if (opts) {
-      set({ currentScreen: opts.initialScreen, subScreen: opts.subScreen });
+      set({
+        ...(opts.initialScreen ? { currentScreen: opts.initialScreen } : {}),
+        ...(opts.subScreen ? { subScreen: opts.subScreen } : {}),
+        ...(opts.context ? { context: opts.context } : {}),
+        ...(opts.contextReference ? { contextReference: opts.contextReference } : {}),
+      });
     }
   },
   setScreen: (screen) => {

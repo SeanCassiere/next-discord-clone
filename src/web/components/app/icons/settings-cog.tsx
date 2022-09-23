@@ -1,8 +1,8 @@
 import React from "react";
 
-const SettingsCog = () => {
+const SettingsCog: React.FC<{ width?: string; height?: string }> = ({ width = "20", height = "20" }) => {
   return (
-    <svg aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24">
+    <svg aria-hidden="true" role="img" width={width} height={height} viewBox="0 0 24 24">
       <path
         fill="currentColor"
         fillRule="evenodd"

@@ -4,11 +4,24 @@ import classNames from "classnames";
 import { useDialogStore } from "../../../hooks/stores/useDialogStore";
 import { useSettingsScreenStore } from "../../../hooks/stores/useSettingsScreenStore";
 import LeaveIcon from "../../../components/app/icons/leave";
+import TrashIcon from "../../../components/app/icons/trash";
+
+type MenuItem = {
+  id: string | number;
+  children: React.ReactNode;
+  type: "item" | "divider" | "title";
+  onClick?: () => void;
+};
 
 const SettingsLayout = () => {
-  const { currentScreen, setScreen, toggleSettingsDialog } = useSettingsScreenStore();
+  const { currentScreen, setScreen, toggleSettingsDialog, context } = useSettingsScreenStore();
   const { toggleLogout } = useDialogStore();
-  const menuItems = [
+
+  const isAccount = context === "account";
+  const isServer = context === "server";
+  const isChannel = context === "channel";
+
+  const accountMenuItems: MenuItem[] = [
     { id: "title-user-settings", children: "User settings", type: "title", onClick: undefined },
     {
       id: "my-account",
@@ -41,8 +54,8 @@ const SettingsLayout = () => {
       id: "logout-link",
       children: (
         <React.Fragment>
-          <span>Logout</span>
-          <span>
+          <span className="text-red-500">Logout</span>
+          <span className="text-red-500">
             <LeaveIcon />
           </span>
         </React.Fragment>
@@ -50,6 +63,88 @@ const SettingsLayout = () => {
       type: "item",
       onClick: () => {
         toggleLogout(true);
+      },
+    },
+    { id: 10000, children: null, type: "divider", onClick: undefined },
+  ];
+  const serverMenuItems: MenuItem[] = [
+    { id: "title-server-settings", children: "Server settings", type: "title", onClick: undefined },
+    {
+      id: "overview",
+      children: <>Overview</>,
+      type: "item",
+      onClick: () => {
+        setScreen("overview");
+      },
+    },
+    {
+      id: "roles",
+      children: <>Roles</>,
+      type: "item",
+      onClick: () => {
+        setScreen("roles");
+      },
+    },
+    { id: 999997, children: null, type: "divider", onClick: undefined },
+    { id: "title-user-management-settings", children: "User Management", type: "title", onClick: undefined },
+    {
+      id: "members",
+      children: <>Members</>,
+      type: "item",
+      onClick: () => {
+        setScreen("members");
+      },
+    },
+    {
+      id: "invites",
+      children: <>Invites</>,
+      type: "item",
+      onClick: () => {
+        setScreen("invites");
+      },
+    },
+    { id: 999999, children: null, type: "divider", onClick: undefined },
+    {
+      id: "delete-server-link",
+      children: (
+        <React.Fragment>
+          <span className="text-red-500">Delete server</span>
+          <span className="text-red-500">
+            <TrashIcon />
+          </span>
+        </React.Fragment>
+      ),
+      type: "item",
+      onClick: () => {
+        alert("Delete server");
+      },
+    },
+    { id: 10000, children: null, type: "divider", onClick: undefined },
+  ];
+  const channelMenuItems: MenuItem[] = [
+    { id: "title-channel-settings", children: "Channel settings", type: "title", onClick: undefined },
+    {
+      id: "overview",
+      children: <>Overview</>,
+      type: "item",
+      onClick: () => {
+        setScreen("overview");
+      },
+    },
+    { id: 999999, children: null, type: "divider", onClick: undefined },
+    {
+      id: "delete-channel-link",
+      children: (
+        <React.Fragment>
+          <span className="text-red-500">Delete channel</span>
+          <span className="text-red-500">
+            <TrashIcon />
+          </span>
+        </React.Fragment>
+      ),
+      type: "item",
+      onClick: () => {
+        alert("Delete channel");
       },
     },
     { id: 10000, children: null, type: "divider", onClick: undefined },
@@ -64,48 +159,57 @@ const SettingsLayout = () => {
       <div className="col-span-4 md:col-span-3 lg:col-span-2 lg:col-start-3">
         <div className="max-h-screen overflow-y-auto pt-16 pb-5 small-scroller channel-bar flex flex-col pl-1 lg:pl-16 xl:pl-20 gap-1">
           <div className="lg:px-2">
-            {menuItems.map((item, idx) => {
-              let component: React.ReactNode = null;
-              if (item.type === "title") {
-                component = (
-                  <div
-                    className={classNames(
-                      "uppercase",
-                      "font-extrabold",
-                      "text-xs",
-                      "ml-1",
-                      { "mt-3": idx !== 0 },
-                      "mb-2",
-                      "lg:mx-2",
-                      "text-gray-400",
-                      "select-none"
-                    )}
-                  >
-                    {item.children}
-                  </div>
-                );
+            {[...(isAccount ? [...accountMenuItems] : isServer ? [...serverMenuItems] : [...channelMenuItems])].map(
+              (item, idx) => {
+                let component: React.ReactNode = null;
+                if (item.type === "title") {
+                  component = (
+                    <div
+                      className={classNames(
+                        "uppercase",
+                        "font-extrabold",
+                        "text-xs",
+                        "ml-1",
+                        { "mt-3": idx !== 0 },
+                        "mb-2",
+                        "lg:mx-2",
+                        "text-gray-400",
+                        "select-none"
+                      )}
+                    >
+                      {item.children}
+                    </div>
+                  );
+                }
+                if (item.type === "divider") {
+                  component = <Divider />;
+                }
+                if (item.type === "item") {
+                  component = (
+                    <MenuItem active={item.id === currentScreen} onClick={item.onClick}>
+                      {item.children}
+                    </MenuItem>
+                  );
+                }
+                return <React.Fragment key={`menu-item-${item.id}`}>{component}</React.Fragment>;
               }
-              if (item.type === "divider") {
-                component = <Divider />;
-              }
-              if (item.type === "item") {
-                component = (
-                  <MenuItem active={item.id === currentScreen} onClick={item.onClick}>
-                    {item.children}
-                  </MenuItem>
-                );
-              }
-              return <React.Fragment key={`menu-item-${item.id}`}>{component}</React.Fragment>;
-            })}
+            )}
           </div>
         </div>
       </div>
       <div className="col-span-8 md:col-span-9 lg:col-span-8 bg-discordgray-700 px-1">
         <div className="max-h-screen overflow-y-auto pt-16 pb-5 small-scroller grid grid-cols-12">
           <div className="col-span-10 md:col-span-11 lg:col-span-8 text-gray-400 font-normal text-sm px-2 sm:px-6 lg:px-12">
-            {currentScreen === "my-account" && <MyAccount />}
-            {currentScreen === "my-profiles" && <>Profiles</>}
-            {currentScreen === "advanced-settings" && <>Advanced settings</>}
+            {isAccount && currentScreen === "my-account" && <MyAccount />}
+            {isAccount && currentScreen === "my-profiles" && <>Profiles</>}
+            {isAccount && currentScreen === "advanced-settings" && <>Advanced settings</>}
+            {/*  */}
+            {isServer && currentScreen === "overview" && <MyAccount />}
+            {isServer && currentScreen === "roles" && <div>Roles</div>}
+            {isServer && currentScreen === "members" && <div>Members</div>}
+            {isServer && currentScreen === "invites" && <div>Invites</div>}
+            {/*  */}
+            {isChannel && currentScreen === "overview" && <MyAccount />}
           </div>
           <div>
             <div
@@ -126,6 +230,8 @@ const SettingsLayout = () => {
     </div>
   );
 };
+
+export default SettingsLayout;
 
 const MyAccount = () => {
   return (
@@ -173,5 +279,3 @@ const MenuItem: React.FC<
     </button>
   );
 };
-
-export default SettingsLayout;

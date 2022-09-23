@@ -11,7 +11,9 @@ import ServerChannelAnnouncementIcon from "../icons/server-channel-announcement"
 import ServerExitIcon from "../icons/server-exit";
 import PencilIcon from "../icons/pencil";
 import ChevronDownIcon from "../icons/chevron-down";
+import SettingsCog from "../icons/settings-cog";
 import TimesIcon from "../icons/times";
+import { useSettingsScreenStore } from "../../../hooks/stores/useSettingsScreenStore";
 
 const HeaderDivider = () => (
   <hr className="bg-discordgray-800 border border-discordgray-800 rounded-full my-1" aria-hidden="true" />
@@ -37,7 +39,9 @@ const ServerChannelSidebar: React.FC<{
   const router = useRouter();
   const trpcUtils = trpc.useContext();
 
-  const { data } = trpc.useQuery(["server.get-user-channels-for-server", { serverId }]);
+  const { toggleSettingsDialog } = useSettingsScreenStore();
+
+  const { data } = trpc.useQuery(["server.get-user-channels-for-server", { serverId }], { refetchInterval: 60000 }); // refetch every 60 seconds
   const { mutate: storeViewedChannelForServer } = trpc.useMutation(["server.set-last-viewed-server-channel-for-user"]);
 
   const onClickChannel = (channelId: string) => {
@@ -72,7 +76,16 @@ const ServerChannelSidebar: React.FC<{
               leaveTo="transform scale-95 opacity-0"
             >
               <Popover.Panel className="absolute top-full shadow-md left-2.5 right-2.5 mt-2 bg-discordgray-900 rounded-sm p-2">
-                <HeaderOption>
+                <HeaderOption
+                  onClick={() =>
+                    toggleSettingsDialog(true, {
+                      initialScreen: "overview",
+                      subScreen: null,
+                      context: "server",
+                      contextReference: serverDetails?.id ?? null,
+                    })
+                  }
+                >
                   <div className="flex justify-between items-center rounded-sm px-2 py-1.5 transition-all duration-150 bg-discordgray-900 hover:bg-indigo-600 text-gray-300 hover:text-white">
                     <span>Edit server</span>
                     <span>
@@ -96,8 +109,8 @@ const ServerChannelSidebar: React.FC<{
       </Popover>
       <div className="flex-1 overflow-y-scroll text-gray-200 small-scroller channel-bar">
         {data && data.channels.filter((c) => c.parent === null).length > 0 && (
-          <div className="mx-2 my-5">
-            <ul className="ml-1.5">
+          <div className="ml-2 mr-0.5 my-5">
+            <ul className="ml-0">
               {data.channels
                 .filter((c) => c.parent === null)
                 .map((channel) => (
@@ -115,14 +128,14 @@ const ServerChannelSidebar: React.FC<{
 
         {data &&
           data.parents.map((parent) => (
-            <div key={parent.id} className="mx-2 my-5">
+            <div key={parent.id} className="ml-2 mr-1 my-5">
               <Disclosure defaultOpen>
                 {({ open }) => (
                   <>
                     <Disclosure.Button className="uppercase font-semibold text-xs select-none flex items-center">
                       {open ? <>&equiv;</> : <>&ne;</>}&nbsp;{parent.name}
                     </Disclosure.Button>
-                    <Disclosure.Panel as="ul" className="ml-1.5">
+                    <Disclosure.Panel as="ul" className="ml-0">
                       {data.channels
                         .filter((p) => p.parent === parent.id)
                         .map((channel) => (
@@ -162,12 +175,15 @@ const ChannelLink = ({
   active: boolean;
   onClick: (channelId: string) => void;
 }) => {
+  const { toggleSettingsDialog } = useSettingsScreenStore();
   return (
     <li
       key={keyId}
       className={classNames(
         "cursor-pointer",
-        "my-2",
+        "my-1",
+        "p-2",
+        "rounded",
         "flex",
         "items-center",
         "text-sm",
@@ -178,18 +194,38 @@ const ChannelLink = ({
         {
           "text-white": active,
           "hover:text-gray-300": active,
+          "bg-discordgray-600": active,
           "text-gray-400": !active,
           "hover:text-gray-200": !active,
+        },
+        {
+          group: !active,
         }
       )}
-      onClick={() => onClick(channel.id)}
     >
-      <span>
-        {channel.iconType === "server-channel-default" && <ServerChannelDefaultIcon />}
-        {channel.iconType === "server-channel-protected" && <ServerChannelProtectedIcon />}
-        {channel.iconType === "server-channel-announcements" && <ServerChannelAnnouncementIcon />}
-      </span>
-      |&nbsp;{channel.name}
+      <div onClick={() => onClick(channel.id)} className="flex-1 flex items-center">
+        <span>
+          {channel.iconType === "server-channel-default" && <ServerChannelDefaultIcon />}
+          {channel.iconType === "server-channel-protected" && <ServerChannelProtectedIcon />}
+          {channel.iconType === "server-channel-announcements" && <ServerChannelAnnouncementIcon />}
+        </span>
+        <span>&nbsp;{channel.name}</span>
+      </div>
+      <div className={classNames("mt-0.5", { "opacity-0": !active, "group-hover:opacity-100": !active })}>
+        <button
+          type="button"
+          onClick={() => {
+            toggleSettingsDialog(true, {
+              initialScreen: "overview",
+              subScreen: null,
+              context: "channel",
+              contextReference: channel.id,
+            });
+          }}
+        >
+          <SettingsCog width="14" height="14" />
+        </button>
+      </div>
     </li>
   );
 };
