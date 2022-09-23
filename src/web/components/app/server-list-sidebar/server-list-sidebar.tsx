@@ -5,8 +5,9 @@ import { FaIceCream, FaCompass, FaPlus } from "react-icons/fa";
 import { trpc } from "../../../../utils/trpc";
 import { getNameAbbreviation } from "../../../../utils/get-name-abbreviation";
 import { useDialogStore } from "../../../hooks/stores/useDialogStore";
+import { execeptionalServerIds } from "../../../../pages/channels/[conversationId]";
 
-const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeConversationId }) => {
+const ServerListSideBar: React.FC<{ activeConversationId: string | null }> = ({ activeConversationId }) => {
   const router = useRouter();
   const { toggleCreateServer } = useDialogStore();
 
@@ -73,7 +74,7 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
       iconComponent: <FaPlus size="22" />,
     });
     list.push({
-      id: "find-servers",
+      id: "guilds",
       name: "Discover",
       image: null,
       type: "app-interaction",
@@ -90,7 +91,15 @@ const ServerListSideBar: React.FC<{ activeConversationId: string }> = ({ activeC
           <React.Fragment key={`server-list-${option.id}`}>
             {(option.type === "app-navigation" || option.type === "app-interaction") && (
               <SideBarIcon
-                isActive={activeConversationId === option.id}
+                isActive={Boolean(
+                  !activeConversationId && option.id === "guilds"
+                    ? true
+                    : option.id === "@me"
+                    ? activeConversationId && execeptionalServerIds.includes(activeConversationId)
+                    : activeConversationId === option.id
+                    ? true
+                    : false
+                )}
                 onClick={option.onClick}
                 icon={option.iconComponent}
                 forceAriaSelection={option.forceAriaSelect}

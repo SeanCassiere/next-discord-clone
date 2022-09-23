@@ -27,7 +27,7 @@ const HeaderOption: React.FC<
   </button>
 );
 
-type ServerBasicDetails = inferQueryOutput<"server.get-basic-server-details-by-id">;
+export type ServerBasicDetails = inferQueryOutput<"server.get-basic-server-details-by-id">;
 
 const ServerChannelSidebar: React.FC<{
   serverId: string;

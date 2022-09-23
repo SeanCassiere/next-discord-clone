@@ -3,10 +3,13 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import UserPresenceInteractor from "../user-presence-interactor";
 
-const MeChannelSidebar: React.FC<{ activeChannelId?: string }> = ({ activeChannelId }) => {
+const MeChannelSidebar: React.FC<{ serverId: string | null; activeChannelId?: string }> = ({
+  activeChannelId,
+  serverId,
+}) => {
   const router = useRouter();
   const click = (id: string) => {
-    router.push("/channels/@me" + id);
+    router.push("/channels" + id);
   };
   return (
     <div className="h-full flex flex-col">
@@ -20,11 +23,17 @@ const MeChannelSidebar: React.FC<{ activeChannelId?: string }> = ({ activeChanne
         </form>
       </div>
       <div className="flex-1 overflow-y-scroll text-gray-200 p-2 flex flex-col gap-0.5 small-scroller channel-bar">
-        <SidebarOptionContainer selected={!activeChannelId || activeChannelId === "friends"} onClick={() => click("")}>
+        <SidebarOptionContainer selected={serverId === "@me" && !activeChannelId} onClick={() => click("/@me")}>
           Friends
         </SidebarOptionContainer>
-        <SidebarOptionContainer selected={activeChannelId === "library"} onClick={() => click("/library")}>
+        <SidebarOptionContainer selected={serverId === "library"} onClick={() => click("/library")}>
           Library
+        </SidebarOptionContainer>
+        <SidebarOptionContainer
+          selected={serverId === "@me" && activeChannelId === "steam"}
+          onClick={() => click("/@me/steam")}
+        >
+          Steam
         </SidebarOptionContainer>
       </div>
       <div className="flex-0 h-14">

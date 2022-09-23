@@ -2,16 +2,9 @@ import React from "react";
 import MeChannelSidebar from "../../../components/app/me-channel-sidebar";
 import CommonSidebarLayout from "../common-sidebar-layout";
 
-const MeLayout: React.FC<{ channelId?: string; titleSetter: (title: string) => void }> = ({
-  channelId,
-  titleSetter,
-}) => {
-  if (!channelId || channelId.toLowerCase() === "@me") {
-    titleSetter("Friends");
-  }
-
+const MeLayout: React.FC<{ channelId?: string; serverId: string | null }> = ({ channelId, serverId }) => {
   return (
-    <CommonSidebarLayout Sidebar={<MeChannelSidebar activeChannelId={channelId} />}>
+    <CommonSidebarLayout Sidebar={<MeChannelSidebar serverId={serverId} activeChannelId={channelId} />}>
       <div className="h-full">
         <ul>
           <li>@me dashboard</li>

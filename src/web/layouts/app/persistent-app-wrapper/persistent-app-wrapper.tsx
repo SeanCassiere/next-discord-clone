@@ -29,7 +29,7 @@ const PersistentAppWrapper: React.FC<{ children?: React.ReactNode }> = ({ childr
 
   const conversationId = router.query.conversationId;
 
-  const activeConversationId = conversationId && typeof conversationId === "string" ? conversationId : "";
+  const activeConversationId = conversationId && typeof conversationId === "string" ? conversationId : null;
 
   if (!isLoggedIn && status !== "loading") signIn();
 
