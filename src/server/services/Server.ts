@@ -1,4 +1,7 @@
+import { BadReqTRPCError } from "../../utils/error";
 import { prisma } from "../db/client";
+import dayjs from "dayjs";
+import { nanoid } from "nanoid";
 
 const KEY_ADMIN = "admin";
 const KEY_OWNER = "owner";
@@ -37,10 +40,28 @@ export type ServerService_GetChannelDetailsByIdProps = {
   channelId: string;
   userId: string;
 };
+export type ServerService_CreateInviteLinkProps = {
+  userId: string;
+  serverId: string;
+  expiresIn: ExpiryType;
+};
+type ExpiryType = "1-day" | "7-days" | "30-days" | "never";
+export type ServerService_JoinUsingInviteCode = {
+  inviteCode: string;
+  userId: string;
+};
 
 type ServerIconTypes = "server-channel-default" | "server-channel-protected" | "server-channel-announcements";
 
 class Server {
+  private async _isUserInServer({ serverId, userId }: { serverId: string; userId: string }) {
+    return await prisma.serverConnection.findFirst({ where: { serverId, userId }, include: { user: true } });
+  }
+  private getExpiryFormat(expiry: ExpiryType): [number, "days" | "day" | "year" | "years"] | null {
+    if (expiry === "never") return null;
+    const [number, type] = expiry.split("-");
+    return [parseInt(number!), type! as any];
+  }
   private _sortIconType(iconType: string | null): ServerIconTypes {
     const defaultIconType = "server-channel-default";
     if (!iconType) {
@@ -57,6 +78,15 @@ class Server {
         return defaultIconType;
     }
   }
+  private async _getUniqueServerCode(): Promise<string> {
+    const code = nanoid(6);
+    const find = await prisma.serverInvite.findFirst({ where: { code } });
+    if (!find) {
+      return code;
+    }
+    return await this._getUniqueServerCode();
+  }
+
   async createNewServerByUser(props: ServerService_CreateNewServerByUserProps) {
     const { ownerId, name, description } = props;
 
@@ -182,7 +212,13 @@ class Server {
     if (!userInServer) {
       return null;
     }
-    return server;
+    if (!server) {
+      return null;
+    }
+    return {
+      ...server,
+      serverType: server.serverType === "PUBLIC" ? ("PUBLIC" as const) : ("PRIVATE" as const),
+    };
   }
 
   async getChannelDetailsById(props: ServerService_GetChannelDetailsByIdProps) {
@@ -191,6 +227,61 @@ class Server {
       return null;
     }
     return channel;
+  }
+
+  async createInviteLink(props: ServerService_CreateInviteLinkProps) {
+    const userConnection = await this._isUserInServer({ serverId: props.serverId, userId: props.userId });
+    if (!userConnection) {
+      throw new BadReqTRPCError("User is not a member of the server", "userId");
+    }
+
+    let expiry;
+    const expiryFormat = this.getExpiryFormat(props.expiresIn);
+    if (!expiryFormat) {
+      expiry = dayjs().add(99, "years").toDate();
+    } else {
+      expiry = dayjs().add(expiryFormat[0], expiryFormat[1]).toDate();
+    }
+
+    const code = await this._getUniqueServerCode();
+
+    return await prisma.serverInvite.create({
+      data: {
+        code: code,
+        expiresAt: expiry,
+        server: { connect: { id: props.serverId } },
+        creator: { connect: { id: userConnection.id } },
+      },
+    });
+  }
+  async joinUsingInviteCode(props: ServerService_JoinUsingInviteCode) {
+    const inviteCode = await prisma.serverInvite.findUnique({ where: { code: props.inviteCode } });
+    if (!inviteCode) {
+      throw new BadReqTRPCError("Invite does not exist", "inviteCode");
+    }
+    if (inviteCode.expiresAt < new Date()) {
+      throw new BadReqTRPCError("Invite has expired", "inviteCode");
+    }
+    const userExists = await this._isUserInServer({ serverId: inviteCode.serverId, userId: props.userId });
+    if (userExists) {
+      throw new BadReqTRPCError("Already a member of the server", "inviteCode");
+    }
+    const roles = await prisma.serverRole.findMany({ where: { serverId: inviteCode.serverId, isInitial: true } });
+    if (roles.length === 0) {
+      throw new BadReqTRPCError("Server has no roles initial roles", "inviteCode");
+    }
+    const role = roles[0]!;
+
+    await prisma.serverConnection.create({
+      data: {
+        server: { connect: { id: inviteCode.serverId } },
+        user: { connect: { id: props.userId } },
+        role: { connect: { id: role.id } },
+      },
+    });
+    await prisma.serverInvite.update({ where: { id: inviteCode.id }, data: { uses: { increment: 1 } } });
+
+    return await this.getBasicServerDetailsById({ userId: props.userId, serverId: inviteCode.serverId });
   }
 }
 

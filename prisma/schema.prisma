@@ -75,6 +75,7 @@ model Server {
     channels      ServerChannel[]
     channelGroups ServerChannelGroup[]
     roles         ServerRole[]
+    invites       ServerInvite[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -94,6 +95,8 @@ model ServerConnection {
 
     server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
     serverId String
+
+    createdIvites ServerInvite[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -140,6 +143,22 @@ model ServerRole {
 
     server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
     serverId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model ServerInvite {
+    id        String   @id @default(cuid())
+    code      String   @unique
+    uses      Int      @default(0)
+    expiresAt DateTime
+
+    server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+    serverId String
+
+    creator   ServerConnection @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+    creatorId String
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

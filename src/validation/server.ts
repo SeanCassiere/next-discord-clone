@@ -10,3 +10,12 @@ export const CreateServerRegistrationSchema = z.object({
   serverType: z.enum(["PUBLIC", "PRIVATE"]),
   description: z.string().default(""),
 });
+
+export const CreateServerInviteLinkSchema = z.object({
+  serverId: z.string(),
+  expiresIn: z.enum(["1-day", "7-days", "30-days", "never"]),
+});
+
+export const JoinUsingInviteCodeSchema = z.object({
+  inviteCode: z.string(),
+});

@@ -13,6 +13,7 @@ import PencilIcon from "../icons/pencil";
 import ChevronDownIcon from "../icons/chevron-down";
 import SettingsCog from "../icons/settings-cog";
 import TimesIcon from "../icons/times";
+import PersonPlusIcon from "../icons/person-plus";
 import { useSettingsScreenStore } from "../../../hooks/stores/useSettingsScreenStore";
 
 const HeaderDivider = () => (
@@ -115,6 +116,7 @@ const ServerChannelSidebar: React.FC<{
                 .filter((c) => c.parent === null)
                 .map((channel) => (
                   <ChannelLink
+                    serverId={serverId}
                     key={channel.id}
                     keyId={channel.id}
                     channel={channel}
@@ -140,6 +142,7 @@ const ServerChannelSidebar: React.FC<{
                         .filter((p) => p.parent === parent.id)
                         .map((channel) => (
                           <ChannelLink
+                            serverId={serverId}
                             key={channel.id}
                             keyId={channel.id}
                             channel={channel}
@@ -165,17 +168,27 @@ const ServerChannelSidebar: React.FC<{
 type ChannelType = inferQueryOutput<"server.get-user-channels-for-server">["channels"][0];
 
 const ChannelLink = ({
+  serverId,
   channel,
   keyId,
   active,
   onClick,
 }: {
+  serverId: string;
   channel: ChannelType;
   keyId: string;
   active: boolean;
   onClick: (channelId: string) => void;
 }) => {
   const { toggleSettingsDialog } = useSettingsScreenStore();
+  const { mutate: createInviteLink } = trpc.useMutation(["server.create-invite-link-for-server"], {
+    onSuccess: (data) => {
+      if (data) {
+        navigator.clipboard.writeText(`${window.location.origin}/invite/${data.code}`);
+        console.log("Invite code", data.code);
+      }
+    },
+  });
   return (
     <li
       key={keyId}
@@ -211,7 +224,20 @@ const ChannelLink = ({
         </span>
         <span>&nbsp;{channel.name}</span>
       </div>
-      <div className={classNames("mt-0.5", { "opacity-0": !active, "group-hover:opacity-100": !active })}>
+      <div
+        className={classNames("mt-0.5", "flex", "items-center", "gap-1.5", {
+          "opacity-0": !active,
+          "group-hover:opacity-100": !active,
+        })}
+      >
+        <button
+          type="button"
+          onClick={() => {
+            createInviteLink({ serverId, expiresIn: "7-days" });
+          }}
+        >
+          <PersonPlusIcon />
+        </button>
         <button
           type="button"
           onClick={() => {

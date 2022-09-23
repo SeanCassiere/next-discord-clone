@@ -1,9 +1,15 @@
 import { z } from "zod";
-import { CreateServerRegistrationSchema } from "../../validation/server";
+import {
+  CreateServerInviteLinkSchema,
+  CreateServerRegistrationSchema,
+  JoinUsingInviteCodeSchema,
+} from "../../validation/server";
+import { createInviteLinkForServer } from "../functions/server/create-invite-link-for-server";
 import { createNewServerByUser } from "../functions/server/create-new-server-by-user";
 import { getBasicServerDetailsById } from "../functions/server/get-basic-server-details-by-id";
 import { getChannelDetailsById } from "../functions/server/get-channel-details-by-id";
 import { getUserChannelsForServer } from "../functions/server/get-user-channels-for-server";
+import { joinUsingInviteCode } from "../functions/server/join-using-invite-code";
 import { setLastViewedServerChannelForUser } from "../functions/server/set-last-viewed-server-channel-for-user";
 import { createProtectedRouter } from "./context";
 
@@ -60,5 +66,21 @@ export const serverRouter = createProtectedRouter()
         description: input.description,
         serverType: input.serverType,
       });
+    },
+  })
+  .mutation("create-invite-link-for-server", {
+    input: CreateServerInviteLinkSchema,
+    resolve: async ({ ctx, input }) => {
+      return await createInviteLinkForServer({
+        serverId: input.serverId,
+        userId: ctx.session.user.id,
+        expiresIn: input.expiresIn,
+      });
+    },
+  })
+  .mutation("join-using-invite-code", {
+    input: JoinUsingInviteCodeSchema,
+    resolve: async ({ ctx, input }) => {
+      return await joinUsingInviteCode({ userId: ctx.session.user.id, inviteCode: input.inviteCode });
     },
   });
