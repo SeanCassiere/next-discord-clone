@@ -26,7 +26,7 @@
     "nodemailer": "^6.7.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "^7.35.0",
+    "react-hook-form": "^7.36.1",
     "react-icons": "^4.4.0",
     "react-query": "^3.39.2",
     "superjson": "^1.10.0",
