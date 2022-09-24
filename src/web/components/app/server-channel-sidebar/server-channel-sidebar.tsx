@@ -195,7 +195,7 @@ const ChannelLink = ({
       className={classNames(
         "cursor-pointer",
         "my-1",
-        "p-2",
+        // "p-2",
         "rounded",
         "flex",
         "items-center",
@@ -216,7 +216,7 @@ const ChannelLink = ({
         }
       )}
     >
-      <div onClick={() => onClick(channel.id)} className="flex-1 flex items-center">
+      <div onClick={() => onClick(channel.id)} className="pl-2 py-2 flex-1 flex items-center">
         <span>
           {channel.iconType === "server-channel-default" && <ServerChannelDefaultIcon />}
           {channel.iconType === "server-channel-protected" && <ServerChannelProtectedIcon />}
@@ -225,7 +225,7 @@ const ChannelLink = ({
         <span>&nbsp;{channel.name}</span>
       </div>
       <div
-        className={classNames("mt-0.5", "flex", "items-center", "gap-1.5", {
+        className={classNames("mt-0.5", "pr-2", "py-2", "flex", "items-center", "gap-1.5", {
           "opacity-0": !active,
           "group-hover:opacity-100": !active,
         })}
