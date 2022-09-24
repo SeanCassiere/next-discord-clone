@@ -3,13 +3,15 @@ import { prisma } from "../db/client";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 
-const KEY_ADMIN = "admin";
 const KEY_OWNER = "owner";
+const KEY_ADMIN = "admin";
+const KEY_MODERATOR = "moderator";
 const KEY_MEMBER = "member";
 
 const defaultRoles = [
-  { key: KEY_ADMIN, display: "Admin", isPublic: false, isInitial: false },
   { key: KEY_OWNER, display: "Owner", isPublic: false, isInitial: false },
+  { key: KEY_ADMIN, display: "Admin", isPublic: false, isInitial: false },
+  { key: KEY_MODERATOR, display: "Moderator", isPublic: false, isInitial: false },
   { key: KEY_MEMBER, display: "Member", isPublic: false, isInitial: true },
 ];
 
