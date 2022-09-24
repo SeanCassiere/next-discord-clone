@@ -12,6 +12,9 @@ type StoreType = {
 
   isCreateServerOpen: boolean;
   toggleCreateServer: (option?: boolean) => void;
+
+  isSettingsActionOpen: boolean;
+  toggleSettingsActionDialog: (option?: boolean) => void;
 };
 
 export const useDialogStore = create<StoreType>((set, get) => ({
@@ -57,5 +60,17 @@ export const useDialogStore = create<StoreType>((set, get) => ({
       value = !get().isCreateServerOpen;
     }
     set({ isCreateServerOpen: value });
+  },
+
+  isSettingsActionOpen: false,
+  toggleSettingsActionDialog: (option) => {
+    let value;
+    if (option !== undefined) {
+      value = option;
+    } else {
+      value = !get().isSettingsActionOpen;
+    }
+    console.log({ value });
+    set({ isSettingsActionOpen: value });
   },
 }));

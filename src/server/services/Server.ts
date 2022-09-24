@@ -1,7 +1,7 @@
-import { BadReqTRPCError } from "../../utils/error";
-import { prisma } from "../db/client";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
+import { BadReqTRPCError } from "../../utils/error";
+import { prisma } from "../db/client";
 
 const KEY_OWNER = "owner";
 const KEY_ADMIN = "admin";
@@ -16,6 +16,7 @@ const defaultRoles = [
 ];
 
 type ServerType = "PUBLIC" | "PRIVATE";
+type ServerIconTypes = "server-channel-default" | "server-channel-protected" | "server-channel-announcements";
 
 export type ServerService_CreateNewServerByUserProps = {
   ownerId: string;
@@ -52,10 +53,24 @@ export type ServerService_JoinUsingInviteCode = {
   inviteCode: string;
   userId: string;
 };
-
-type ServerIconTypes = "server-channel-default" | "server-channel-protected" | "server-channel-announcements";
+export type ServerService_AdminOrOwnerDeleteChannelProps = {
+  userId: string;
+  channelId: string;
+};
+export type ServerService_OwnerDeleteServerProps = {
+  userId: string;
+  serverId: string;
+};
 
 class Server {
+  private async _doesUserHaveRole(props: { userId: string; serverId: string; roleKey: string }) {
+    const connection = await prisma.serverConnection.findFirst({
+      where: { userId: props.userId, serverId: props.serverId, role: { key: props.roleKey } },
+      include: { role: true },
+    });
+    if (!connection) return false;
+    return true;
+  }
   private async _isUserInServer({ serverId, userId }: { serverId: string; userId: string }) {
     return await prisma.serverConnection.findFirst({ where: { serverId, userId }, include: { user: true } });
   }
@@ -284,6 +299,62 @@ class Server {
     await prisma.serverInvite.update({ where: { id: inviteCode.id }, data: { uses: { increment: 1 } } });
 
     return await this.getBasicServerDetailsById({ userId: props.userId, serverId: inviteCode.serverId });
+  }
+  async ownerOrAdminDeleteChannel(props: ServerService_AdminOrOwnerDeleteChannelProps) {
+    const channel = await prisma.serverChannel.findFirst({ where: { id: props.channelId } });
+    if (!channel) throw new BadReqTRPCError("Channel does not exist", "channelId");
+
+    const userInServer = await this._isUserInServer({ userId: props.userId, serverId: channel.serverId ?? "" });
+    if (!userInServer) throw new BadReqTRPCError("User is not a member of the server", "userId");
+
+    const userHasAdminRole = await this._doesUserHaveRole({
+      userId: props.userId,
+      serverId: channel.serverId ?? "",
+      roleKey: KEY_ADMIN,
+    });
+    const userHasOwnerRole = await this._doesUserHaveRole({
+      userId: props.userId,
+      serverId: channel.serverId ?? "",
+      roleKey: KEY_OWNER,
+    });
+    if (!userHasOwnerRole && !userHasAdminRole) {
+      throw new BadReqTRPCError("User does not have permissions", "userId");
+    }
+
+    try {
+      const server = await prisma.serverChannel.delete({ where: { id: props.channelId } });
+      return {
+        success: true as const,
+        serverId: server.serverId!,
+      };
+    } catch (error) {
+      return {
+        success: false as const,
+        serverId: null,
+      };
+    }
+  }
+  async ownerDeleteServer(props: ServerService_OwnerDeleteServerProps) {
+    const userHasOwnerRole = await this._doesUserHaveRole({
+      userId: props.userId,
+      serverId: props.serverId,
+      roleKey: KEY_OWNER,
+    });
+
+    if (!userHasOwnerRole) {
+      throw new BadReqTRPCError("User does not have permissions", "userId");
+    }
+
+    try {
+      await prisma.server.delete({ where: { id: props.serverId } });
+      return {
+        success: true as const,
+      };
+    } catch (err) {
+      return {
+        success: false as const,
+      };
+    }
   }
 }
 

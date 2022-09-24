@@ -48,7 +48,6 @@ export const CreationNameBody: React.FC<CreateServerScreenProps> = ({ mode, show
 
           try {
             await mutateAsync({ name, serverType: discoverableValue ? "PUBLIC" : "PRIVATE" });
-            console.log("done!!!!!!!!!!");
           } catch (error) {
             setError("name", { message: "Something went wrong" });
           }

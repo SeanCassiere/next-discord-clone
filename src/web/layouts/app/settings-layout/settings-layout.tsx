@@ -5,6 +5,7 @@ import { useDialogStore } from "../../../hooks/stores/useDialogStore";
 import { useSettingsScreenStore } from "../../../hooks/stores/useSettingsScreenStore";
 import LeaveIcon from "../../../components/app/icons/leave";
 import TrashIcon from "../../../components/app/icons/trash";
+import { ChannelDeleteActionDialog, ServerDeleteActionDialog } from "./settings-actions-dialog";
 
 type MenuItem = {
   id: string | number;
@@ -14,7 +15,8 @@ type MenuItem = {
 };
 
 const SettingsLayout = () => {
-  const { currentScreen, setScreen, toggleSettingsDialog, context } = useSettingsScreenStore();
+  const { currentScreen, setScreen, toggleSettingsDialog, context, contextReference } = useSettingsScreenStore();
+  const { toggleSettingsActionDialog: toggleSettingsAction } = useDialogStore();
   const { toggleLogout } = useDialogStore();
 
   const isAccount = context === "account";
@@ -116,7 +118,7 @@ const SettingsLayout = () => {
       ),
       type: "item",
       onClick: () => {
-        alert("Delete server");
+        toggleSettingsAction(true);
       },
     },
     { id: 10000, children: null, type: "divider", onClick: undefined },
@@ -144,7 +146,7 @@ const SettingsLayout = () => {
       ),
       type: "item",
       onClick: () => {
-        alert("Delete channel");
+        toggleSettingsAction(true);
       },
     },
     { id: 10000, children: null, type: "divider", onClick: undefined },
@@ -156,6 +158,8 @@ const SettingsLayout = () => {
 
   return (
     <div className="w-full min-h-screen grid grid-cols-12">
+      {context === "channel" && contextReference && <ChannelDeleteActionDialog channelId={contextReference} />}
+      {context === "server" && contextReference && <ServerDeleteActionDialog serverId={contextReference} />}
       <div className="col-span-4 md:col-span-3 lg:col-span-2 lg:col-start-3">
         <div className="max-h-screen overflow-y-auto pt-16 pb-5 small-scroller channel-bar flex flex-col pl-1 lg:pl-16 xl:pl-20 gap-1">
           <div className="lg:px-2">
